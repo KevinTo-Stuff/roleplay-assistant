@@ -33,12 +33,12 @@ class CustomColors extends ThemeExtension<CustomColors> {
   }
 
   static const CustomColors light = CustomColors(
-    success: Color(0xFF4CAF50),
+    success: Color(0xFF616161),
     onSuccess: Color(0xFFFFFFFF),
   );
 
   static const CustomColors dark = CustomColors(
-    success: Color(0xFF81C784),
-    onSuccess: Color(0xFF1B5E20),
+    success: Color(0xFFBDBDBD),
+    onSuccess: Color(0xFF000000),
   );
 }
