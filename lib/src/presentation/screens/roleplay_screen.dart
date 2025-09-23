@@ -6,6 +6,7 @@ import 'package:auto_route/auto_route.dart';
 
 // Project imports:
 import 'package:roleplay_assistant/src/shared/models/roleplay.dart';
+import 'package:roleplay_assistant/src/core/theme/dimens.dart';
 
 @RoutePage()
 class RoleplayScreen extends StatelessWidget {
@@ -23,19 +24,17 @@ class RoleplayScreen extends StatelessWidget {
         title: Text(title),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(Dimens.spacing),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(roleplay.name, style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 8),
             Text(
               roleplay.description.isNotEmpty
                   ? roleplay.description
                   : 'No description provided.',
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(context).textTheme.labelMedium,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: Dimens.spacing),
             Row(
               children: <Widget>[
                 const Text('Active: '),
@@ -47,7 +46,7 @@ class RoleplayScreen extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: Dimens.spacing),
             // Placeholder for further roleplay details and editing UI
             const Text('Roleplay details and editor will go here.'),
           ],
