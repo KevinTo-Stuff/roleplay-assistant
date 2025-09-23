@@ -1,6 +1,42 @@
 include: package:flutter_lints/flutter.yaml
 
+# Additional analyzer and lint configuration layered on top of
+# the official `flutter_lints` rules. Adjust any rule to taste.
+analyzer:
+  exclude:
+    - "build/**"
+    - ".dart_tool/**"
+    - ".idea/**"
+    - "ios/Flutter/**"
+    - "android/**/generated/**"
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "**/*.gen.dart"
+
 linter:
   rules:
+    # Core style & safety
+    always_specify_types: true
+    annotate_overrides: true
+    prefer_final_fields: true
+    prefer_final_locals: true
+    prefer_typing_uninitialized_variables: true
+
+    # Immutability / const usage
     prefer_const_constructors: true
     prefer_const_literals_to_create_immutables: true
+
+    # Resources and subscription handling
+    cancel_subscriptions: true
+    close_sinks: true
+
+    # API design / readability
+    sort_constructors_first: true
+    type_init_formals: true
+    require_trailing_commas: true
+
+    # Prevent noisy prints in production code
+    avoid_print: true
+
+    # Keep cascades from creating accidental side-effects
+    avoid_single_cascade_in_expression_statements: true
