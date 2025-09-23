@@ -304,7 +304,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       vertical: Dimens.minSpacing / 2,
                     ),
                     elevation: 2.5,
-                    color: Theme.of(context).colorScheme.surfaceVariant,
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                       side: BorderSide(

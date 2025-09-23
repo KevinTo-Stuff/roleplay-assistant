@@ -13,6 +13,17 @@ import 'package:flutter/foundation.dart';
 /// Note: `settings` is intentionally left flexible. Replace with a
 /// strongly-typed settings class when the schema is decided.
 class Roleplay {
+  factory Roleplay.fromJson(Map<String, dynamic> json) => Roleplay(
+        id: json['id'] as String?,
+        name: json['name'] as String? ?? '',
+        active: json['active'] as bool? ?? false,
+        description: json['description'] as String? ?? '',
+        settings: json['settings'] != null
+            ? Map<String, dynamic>.from(
+                json['settings'] as Map<String, dynamic>,
+              )
+            : null,
+      );
   const Roleplay({
     this.id,
     required this.name,
@@ -34,17 +45,6 @@ class Roleplay {
     );
   }
 
-  factory Roleplay.fromJson(Map<String, dynamic> json) => Roleplay(
-        id: json['id'] as String?,
-        name: json['name'] as String? ?? '',
-        active: json['active'] as bool? ?? false,
-        description: json['description'] as String? ?? '',
-        settings: json['settings'] != null
-            ? Map<String, dynamic>.from(
-                json['settings'] as Map<String, dynamic>,
-              )
-            : null,
-      );
   final String name;
   final bool active;
   final String description;
