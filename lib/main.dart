@@ -1,74 +1,26 @@
+// Dart imports:
+import 'dart:async';
+
+// Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'package:roleplay_assistant/src/core/app_initializer.dart';
+import 'package:roleplay_assistant/src/core/application.dart';
+
 void main() {
-  runApp(const RoleplayAssistantApp());
-}
+  final AppInitializer appInitializer = AppInitializer();
 
-class RoleplayAssistantApp extends StatelessWidget {
-  const RoleplayAssistantApp({super.key});
+  runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Roleplay Assistant',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Roleplay Assistant'),
-    );
-  }
-}
+      await appInitializer.preAppRun();
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+      runApp(Application());
 
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Welcome to Roleplay Assistant!',
-              style: TextStyle(fontSize: 24),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'You have pressed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
+      appInitializer.postAppRun();
+    },
+    (Object error, StackTrace stack) {},
+  );
 }
