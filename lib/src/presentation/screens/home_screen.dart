@@ -98,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final Roleplay rp = Roleplay(
       name: result.trim(),
-      active: false,
+      active: true,
       description: '',
     );
 
@@ -257,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: _showCreateDialog,
           ),
           const SizedBox(height: Dimens.spacing),
-          // Roleplays list
+          // Roleplays list: separate active and inactive
           FutureBuilder<List<Roleplay>>(
             future: _futureRoleplays,
             builder: (BuildContext ctx, AsyncSnapshot<List<Roleplay>> snap) {
@@ -290,70 +290,111 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               }
 
-              return Column(
-                children: items.map((Roleplay r) {
-                  final String title = r.name;
-                  final String subtitle = r.description.isNotEmpty
-                      ? r.description
-                      : 'Tap to open or long press for options';
+              final List<Roleplay> active =
+                  items.where((Roleplay r) => r.active).toList();
+              final List<Roleplay> inactive =
+                  items.where((Roleplay r) => !r.active).toList();
 
-                  return Card(
-                    key: ValueKey<String>(r.id ?? r.name),
-                    margin: const EdgeInsets.symmetric(
-                      vertical: Dimens.minSpacing / 2,
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  // Active roleplays (visible)
+                  if (active.isNotEmpty) ...<Widget>[
+                    ...active
+                        .map((Roleplay r) => _buildRoleplayCard(context, r)),
+                  ],
+
+                  // Inactive roleplays in a collapsible ExpansionTile
+                  if (inactive.isNotEmpty) ...<Widget>[
+                    const SizedBox(height: Dimens.spacing),
+                    ExpansionTile(
+                      childrenPadding: const EdgeInsets.fromLTRB(
+                        0,
+                        Dimens.spacing,
+                        0,
+                        Dimens.spacing,
+                      ),
+                      title: Text(
+                        'Inactive Roleplays',
+                        style: context.textTheme.titleMedium,
+                      ),
+                      initiallyExpanded: false,
+                      children: inactive
+                          .map(
+                            (Roleplay r) => Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 0,
+                                vertical: Dimens.minSpacing / 2,
+                              ),
+                              child: _buildRoleplayCard(context, r),
+                            ),
+                          )
+                          .toList(),
                     ),
-                    elevation: 2.5,
-                    color:
-                        Theme.of(context).colorScheme.surfaceContainerHighest,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      side: BorderSide(
-                        color: Theme.of(context).colorScheme.outline,
-                        width: 1,
-                      ),
-                    ),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: Dimens.spacing,
-                        vertical: Dimens.minSpacing,
-                      ),
-                      leading: CircleAvatar(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.primaryContainer,
-                        foregroundColor:
-                            Theme.of(context).colorScheme.onPrimaryContainer,
-                        child: Text(
-                          title.isNotEmpty ? title[0].toUpperCase() : '?',
-                          style: context.textTheme.titleSmall,
-                        ),
-                      ),
-                      title: Text(title, style: context.textTheme.titleMedium),
-                      subtitle:
-                          Text(subtitle, style: context.textTheme.labelSmall),
-                      trailing: Icon(
-                        Icons.more_vert,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
-                      // Only display the name for now
-                      onTap: () {
-                        // Navigate to the RoleplayScreen and pass the selected
-                        // roleplay's name. Using a direct MaterialPageRoute so
-                        // we don't need to regenerate auto_route code.
-                        Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (BuildContext ctx) =>
-                                RoleplayScreen(roleplay: r),
-                          ),
-                        );
-                      },
-                      onLongPress: () => _showOptionsForRoleplay(r),
-                    ),
-                  );
-                }).toList(),
+                  ],
+                ],
               );
             },
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildRoleplayCard(BuildContext context, Roleplay r) {
+    final String title = r.name;
+    final String subtitle = r.description.isNotEmpty
+        ? r.description
+        : 'Tap to open or long press for options';
+
+    final bool isActive = r.active;
+    final double opacity = isActive ? 1.0 : 0.55;
+
+    return Card(
+      key: ValueKey<String>(r.id ?? r.name),
+      margin: const EdgeInsets.symmetric(
+        vertical: Dimens.minSpacing / 2,
+      ),
+      elevation: 2.5,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: Theme.of(context).colorScheme.outline,
+          width: 1,
+        ),
+      ),
+      child: Opacity(
+        opacity: opacity,
+        // Keep interactive behavior but visually dim when inactive
+        child: ListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: Dimens.spacing,
+            vertical: Dimens.minSpacing,
+          ),
+          leading: CircleAvatar(
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+            child: Text(
+              title.isNotEmpty ? title[0].toUpperCase() : '?',
+              style: context.textTheme.titleSmall,
+            ),
+          ),
+          title: Text(title, style: context.textTheme.titleMedium),
+          subtitle: Text(subtitle, style: context.textTheme.labelSmall),
+          trailing: Icon(
+            Icons.more_vert,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (BuildContext ctx) => RoleplayScreen(roleplay: r),
+              ),
+            );
+          },
+          onLongPress: () => _showOptionsForRoleplay(r),
+        ),
       ),
     );
   }
