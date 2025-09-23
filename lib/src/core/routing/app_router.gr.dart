@@ -27,6 +27,22 @@ class HomeRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [RoleplayScreen]
+class RoleplayRoute extends PageRouteInfo<void> {
+  const RoleplayRoute({List<PageRouteInfo>? children})
+      : super(RoleplayRoute.name, initialChildren: children);
+
+  static const String name = 'RoleplayRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const RoleplayScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [SettingsScreen]
 class SettingsRoute extends PageRouteInfo<void> {
   const SettingsRoute({List<PageRouteInfo>? children})
