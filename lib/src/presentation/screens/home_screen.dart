@@ -241,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Text('Roleplay Assistant', style: context.textTheme.titleLarge),
           const SizedBox(height: Dimens.minSpacing),
           Text(
-            'Welcome! This app helps you manage and enhance your roleplaying.',
+            'Welcome! This app helps you manage your roleplaying.',
             style: context.textTheme.bodyMedium,
           ),
           const SizedBox(height: Dimens.spacing),
