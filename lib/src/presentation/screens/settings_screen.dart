@@ -35,7 +35,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _clearAllData() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Capture context-dependent objects BEFORE any async gaps to avoid the
+    // 'BuildContext across async gaps' warning.
+    final SettingsCubit settingsCubit = context.read<SettingsCubit>();
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
+
+    // Show confirmation first (uses BuildContext) and only then perform async work.
     final bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -57,21 +62,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
 
     if (confirmed == true) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.clear();
+
       // Reset the settings cubit to default values
-      final SettingsCubit settingsCubit = context.read<SettingsCubit>();
       settingsCubit.reset();
+
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('All data cleared')));
+      messenger.showSnackBar(const SnackBar(content: Text('All data cleared')));
     }
   }
 
   Future<void> _launchUrl(String url) async {
     final Uri uri = Uri.parse(url);
+    // Capture messenger before awaiting to avoid using BuildContext across
+    // async gaps.
+    final ScaffoldMessengerState messenger = ScaffoldMessenger.of(context);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
+      messenger
           .showSnackBar(const SnackBar(content: Text('Could not open link')));
     }
   }
@@ -84,16 +93,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: <Widget>[
           ExpansionTile(
             leading: const Icon(Icons.palette),
-            initiallyExpanded: true,
             title: const Text('Personalisation'),
             children: <Widget>[
               BlocBuilder<SettingsCubit, SettingsState>(
                 builder: (BuildContext context, SettingsState state) {
                   return SwitchListTile(
                     value: state.isDarkMode,
-                    onChanged: (bool v) async {
+                    onChanged: (bool v) {
+                      // Update cubit immediately. Persist without awaiting to
+                      // avoid using BuildContext across async gaps.
                       context.read<SettingsCubit>().setDarkMode(v);
-                      await _persistDarkMode(v);
+                      // Ignore unawaited future lint: we intentionally don't await
+                      // the persistence call so the UI updates immediately.
+                      // ignore: unawaited_futures
+                      _persistDarkMode(v);
                     },
                     secondary: const Icon(Icons.dark_mode),
                     title: const Text('Dark mode'),
@@ -104,13 +117,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 builder: (BuildContext context, SettingsState state) {
                   return SwitchListTile(
                     value: !state.notificationsEnabled,
-                    onChanged: (bool v) async {
+                    onChanged: (bool v) {
                       // 'muted' represents disabling notifications in this UI
                       final bool muted = v;
                       context
                           .read<SettingsCubit>()
                           .setNotificationsEnabled(!muted);
-                      await _persistMuted(muted, !muted);
+                      // ignore: unawaited_futures
+                      _persistMuted(muted, !muted);
                     },
                     secondary: const Icon(Icons.volume_off),
                     title: const Text('Mute application'),
@@ -121,7 +135,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           ExpansionTile(
             leading: const Icon(Icons.storage),
-            initiallyExpanded: true,
             title: const Text('Data'),
             children: <Widget>[
               ListTile(
@@ -134,7 +147,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
           ExpansionTile(
             leading: const Icon(Icons.info_outline),
-            initiallyExpanded: true,
             title: const Text('About'),
             children: <Widget>[
               ListTile(
