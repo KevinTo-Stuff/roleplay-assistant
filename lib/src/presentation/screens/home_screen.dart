@@ -266,8 +266,10 @@ class _HomeScreenState extends State<HomeScreen> {
               }
 
               if (snap.hasError) {
-                return Text('Failed to load roleplays',
-                    style: context.textTheme.bodyMedium);
+                return Text(
+                  'Failed to load roleplays',
+                  style: context.textTheme.bodyMedium,
+                );
               }
 
               final List<Roleplay> items = snap.data ?? <Roleplay>[];
@@ -290,19 +292,52 @@ class _HomeScreenState extends State<HomeScreen> {
 
               return Column(
                 children: items.map((Roleplay r) {
+                  final String title = r.name;
+                  final String subtitle = r.description.isNotEmpty
+                      ? r.description
+                      : 'Tap to open or long press for options';
+
                   return Card(
-                    key: ValueKey(r.id ?? r.name),
+                    key: ValueKey<String>(r.id ?? r.name),
+                    margin: const EdgeInsets.symmetric(
+                      vertical: Dimens.minSpacing / 2,
+                    ),
+                    elevation: 2.5,
+                    color: Theme.of(context).colorScheme.surfaceVariant,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(
+                        color: Theme.of(context).colorScheme.outline,
+                        width: 1,
+                      ),
+                    ),
                     child: ListTile(
-                      title: Text(r.name),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: Dimens.spacing,
+                        vertical: Dimens.minSpacing,
+                      ),
+                      leading: CircleAvatar(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.primaryContainer,
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onPrimaryContainer,
+                        child: Text(
+                          title.isNotEmpty ? title[0].toUpperCase() : '?',
+                          style: context.textTheme.titleSmall,
+                        ),
+                      ),
+                      title: Text(title, style: context.textTheme.titleMedium),
+                      subtitle:
+                          Text(subtitle, style: context.textTheme.labelSmall),
+                      trailing: Icon(
+                        Icons.more_vert,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                       // Only display the name for now
                       onTap: () {
                         // TODO: navigate to roleplay details / editor
                       },
                       onLongPress: () => _showOptionsForRoleplay(r),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: Dimens.spacing,
-                        vertical: Dimens.minSpacing,
-                      ),
                     ),
                   );
                 }).toList(),
