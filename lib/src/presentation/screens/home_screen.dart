@@ -20,7 +20,7 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(toolbarHeight: 0),
       body: ListView(
         padding: const EdgeInsets.all(Dimens.spacing),
-        children: [
+        children: <Widget>[
           const SizedBox(height: Dimens.tripleSpacing),
           Text('Roleplay Assistant', style: context.textTheme.titleLarge),
           const SizedBox(height: Dimens.minSpacing),

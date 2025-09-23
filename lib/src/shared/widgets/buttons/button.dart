@@ -68,7 +68,7 @@ class Button extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = Text(
+    final Text label = Text(
       title,
       style: context.textTheme.bodyMedium?.copyWith(
         color: (type == ButtonType.primary || type == ButtonType.neutral)

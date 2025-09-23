@@ -18,37 +18,40 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  static const _githubUrl =
+  static const String _githubUrl =
       'https://github.com/KevinTo-Stuff/roleplay-assistant';
-  static const _issuesUrl =
+  static const String _issuesUrl =
       'https://github.com/KevinTo-Stuff/roleplay-assistant/issues';
 
   Future<void> _persistDarkMode(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('darkMode', value);
   }
 
   Future<void> _persistMuted(bool value, bool notificationsEnabled) async {
-    final prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('muted', value);
     await prefs.setBool('notificationsEnabled', notificationsEnabled);
   }
 
   Future<void> _clearAllData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final confirmed = await showDialog<bool>(
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final bool? confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (BuildContext context) => AlertDialog(
         title: const Text('Clear all data?'),
         content: const Text(
-            'This will remove all stored preferences and cannot be undone.'),
-        actions: [
+          'This will remove all stored preferences and cannot be undone.',
+        ),
+        actions: <Widget>[
           TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel')),
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
           TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Clear')),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Clear'),
+          ),
         ],
       ),
     );
@@ -56,7 +59,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (confirmed == true) {
       await prefs.clear();
       // Reset the settings cubit to default values
-      final settingsCubit = context.read<SettingsCubit>();
+      final SettingsCubit settingsCubit = context.read<SettingsCubit>();
       settingsCubit.reset();
       if (!mounted) return;
       ScaffoldMessenger.of(context)
@@ -65,7 +68,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _launchUrl(String url) async {
-    final uri = Uri.parse(url);
+    final Uri uri = Uri.parse(url);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
       if (!mounted) return;
       ScaffoldMessenger.of(context)
@@ -78,16 +81,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
-        children: [
+        children: <Widget>[
           ExpansionTile(
             leading: const Icon(Icons.palette),
             title: const Text('Personalisation'),
-            children: [
+            children: <Widget>[
               BlocBuilder<SettingsCubit, SettingsState>(
                 builder: (BuildContext context, SettingsState state) {
                   return SwitchListTile(
                     value: state.isDarkMode,
-                    onChanged: (v) async {
+                    onChanged: (bool v) async {
                       context.read<SettingsCubit>().setDarkMode(v);
                       await _persistDarkMode(v);
                     },
@@ -100,9 +103,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 builder: (BuildContext context, SettingsState state) {
                   return SwitchListTile(
                     value: !state.notificationsEnabled,
-                    onChanged: (v) async {
+                    onChanged: (bool v) async {
                       // 'muted' represents disabling notifications in this UI
-                      final muted = v;
+                      final bool muted = v;
                       context
                           .read<SettingsCubit>()
                           .setNotificationsEnabled(!muted);
@@ -118,7 +121,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ExpansionTile(
             leading: const Icon(Icons.storage),
             title: const Text('Data'),
-            children: [
+            children: <Widget>[
               ListTile(
                 leading: const Icon(Icons.delete_forever),
                 title: const Text('Clear all data'),
@@ -130,7 +133,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ExpansionTile(
             leading: const Icon(Icons.info_outline),
             title: const Text('About'),
-            children: [
+            children: <Widget>[
               ListTile(
                 leading: const Icon(Icons.code),
                 title: const Text('View on GitHub'),
