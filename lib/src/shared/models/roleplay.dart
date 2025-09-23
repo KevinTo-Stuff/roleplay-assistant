@@ -14,6 +14,7 @@ import 'package:flutter/foundation.dart';
 /// strongly-typed settings class when the schema is decided.
 class Roleplay {
   const Roleplay({
+    this.id,
     required this.name,
     required this.active,
     required this.description,
@@ -21,6 +22,7 @@ class Roleplay {
   });
 
   factory Roleplay.fromJson(Map<String, dynamic> json) => Roleplay(
+        id: json['id'] as String?,
         name: json['name'] as String? ?? '',
         active: json['active'] as bool? ?? false,
         description: json['description'] as String? ?? '',
@@ -33,15 +35,18 @@ class Roleplay {
   final String name;
   final bool active;
   final String description;
+  final String? id;
   final Map<String, dynamic>? settings;
 
   Roleplay copyWith({
+    String? id,
     String? name,
     bool? active,
     String? description,
     Map<String, dynamic>? settings,
   }) {
     return Roleplay(
+      id: id ?? this.id,
       name: name ?? this.name,
       active: active ?? this.active,
       description: description ?? this.description,
@@ -51,6 +56,7 @@ class Roleplay {
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
+      if (id != null) 'id': id,
       'name': name,
       'active': active,
       'description': description,
@@ -62,6 +68,7 @@ class Roleplay {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     return other is Roleplay &&
+        other.id == id &&
         other.name == name &&
         other.active == active &&
         other.description == description &&
@@ -70,6 +77,7 @@ class Roleplay {
 
   @override
   int get hashCode => Object.hash(
+        id,
         name,
         active,
         description,
@@ -78,6 +86,6 @@ class Roleplay {
 
   @override
   String toString() {
-    return 'Roleplay(name: $name, active: $active, description: $description, settings: $settings)';
+    return 'Roleplay(id: $id, name: $name, active: $active, description: $description, settings: $settings)';
   }
 }
