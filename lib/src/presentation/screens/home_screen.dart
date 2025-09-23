@@ -342,7 +342,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.of(context).push(
                           MaterialPageRoute<void>(
                             builder: (BuildContext ctx) =>
-                                RoleplayScreen(name: title),
+                                RoleplayScreen(roleplay: r),
                           ),
                         );
                       },
