@@ -21,6 +21,19 @@ class Roleplay {
     this.settings,
   });
 
+  /// Convenience factory that returns an empty/default Roleplay instance.
+  ///
+  /// Useful for initializing forms or creating placeholders.
+  static Roleplay empty() {
+    return const Roleplay(
+      id: null,
+      name: '',
+      active: false,
+      description: '',
+      settings: null,
+    );
+  }
+
   factory Roleplay.fromJson(Map<String, dynamic> json) => Roleplay(
         id: json['id'] as String?,
         name: json['name'] as String? ?? '',
