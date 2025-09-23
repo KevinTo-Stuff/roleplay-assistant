@@ -1,3 +1,4 @@
+// Flutter imports:
 import 'package:flutter/foundation.dart';
 
 /// Model representing a Roleplay configuration.
