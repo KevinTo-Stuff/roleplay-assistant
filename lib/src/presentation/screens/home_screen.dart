@@ -235,79 +235,81 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(toolbarHeight: 0),
-      body: ListView(
+      body: Padding(
         padding: const EdgeInsets.all(Dimens.spacing),
-        children: <Widget>[
-          Text('Roleplay Assistant', style: context.textTheme.titleLarge),
-          const SizedBox(height: Dimens.minSpacing),
-          Text(
-            'Welcome! This app helps you manage your roleplaying.',
-            style: context.textTheme.bodyMedium,
-          ),
-          const SizedBox(height: Dimens.spacing),
-          Button.outline(
-            title: 'Settings',
-            onPressed: () {
-              context.router.push(const SettingsRoute());
-            },
-          ),
-          const SizedBox(height: Dimens.spacing),
-          Button.primary(
-            title: 'Add Roleplay',
-            onPressed: _showCreateDialog,
-          ),
-          const SizedBox(height: Dimens.spacing),
-          // Roleplays list: separate active and inactive
-          FutureBuilder<List<Roleplay>>(
-            future: _futureRoleplays,
-            builder: (BuildContext ctx, AsyncSnapshot<List<Roleplay>> snap) {
-              if (snap.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text('Roleplay Assistant', style: context.textTheme.titleLarge),
+            const SizedBox(height: Dimens.minSpacing),
+            Text(
+              'Welcome! This app helps you manage your roleplaying.',
+              style: context.textTheme.bodyMedium,
+            ),
+            const SizedBox(height: Dimens.spacing),
+            Button.outline(
+              title: 'Settings',
+              onPressed: () {
+                context.router.push(const SettingsRoute());
+              },
+            ),
+            const SizedBox(height: Dimens.spacing),
+            Button.primary(
+              title: 'Add Roleplay',
+              onPressed: _showCreateDialog,
+            ),
+            const SizedBox(height: Dimens.spacing),
 
-              if (snap.hasError) {
-                return Text(
-                  'Failed to load roleplays',
-                  style: context.textTheme.bodyMedium,
-                );
-              }
+            // Roleplays list area should scroll independently of the header
+            Expanded(
+              child: FutureBuilder<List<Roleplay>>(
+                future: _futureRoleplays,
+                builder:
+                    (BuildContext ctx, AsyncSnapshot<List<Roleplay>> snap) {
+                  if (snap.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-              final List<Roleplay> items = snap.data ?? <Roleplay>[];
-              if (items.isEmpty) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: Dimens.spacing),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Center(
-                        child: Text(
-                          'Create a new roleplay from the settings or import one to get started.',
-                          style: context.textTheme.labelMedium,
-                        ),
+                  if (snap.hasError) {
+                    return Center(
+                      child: Text(
+                        'Failed to load roleplays',
+                        style: context.textTheme.bodyMedium,
                       ),
-                    ],
-                  ),
-                );
-              }
+                    );
+                  }
 
-              final List<Roleplay> active =
-                  items.where((Roleplay r) => r.active).toList();
-              final List<Roleplay> inactive =
-                  items.where((Roleplay r) => !r.active).toList();
+                  final List<Roleplay> items = snap.data ?? <Roleplay>[];
+                  if (items.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'Create a new roleplay from the settings or import one to get started.',
+                        style: context.textTheme.labelMedium,
+                      ),
+                    );
+                  }
 
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  // Active roleplays (visible)
-                  if (active.isNotEmpty) ...<Widget>[
-                    ...active
-                        .map((Roleplay r) => _buildRoleplayCard(context, r)),
-                  ],
+                  final List<Roleplay> active =
+                      items.where((Roleplay r) => r.active).toList();
+                  final List<Roleplay> inactive =
+                      items.where((Roleplay r) => !r.active).toList();
 
-                  // Inactive roleplays in a collapsible ExpansionTile
-                  if (inactive.isNotEmpty) ...<Widget>[
-                    const SizedBox(height: Dimens.spacing),
-                    ExpansionTile(
+                  final List<Widget> listChildren = <Widget>[];
+
+                  if (active.isNotEmpty) {
+                    listChildren.add(
+                      const Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: Dimens.minSpacing),
+                      ),
+                    );
+                    listChildren.addAll(active
+                        .map((Roleplay r) => _buildRoleplayCard(context, r)));
+                  }
+
+                  if (inactive.isNotEmpty) {
+                    listChildren.add(const SizedBox(height: Dimens.spacing));
+                    listChildren.add(ExpansionTile(
                       childrenPadding: const EdgeInsets.fromLTRB(
                         0,
                         Dimens.spacing,
@@ -330,13 +332,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           )
                           .toList(),
-                    ),
-                  ],
-                ],
-              );
-            },
-          ),
-        ],
+                    ));
+                  }
+
+                  return ListView(
+                    children: listChildren,
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
