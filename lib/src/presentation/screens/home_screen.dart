@@ -6,6 +6,7 @@ import 'package:auto_route/auto_route.dart';
 
 // Project imports:
 import 'package:roleplay_assistant/src/core/routing/app_router.dart';
+import 'package:roleplay_assistant/src/presentation/screens/roleplay_screen.dart';
 import 'package:roleplay_assistant/src/core/theme/dimens.dart';
 import 'package:roleplay_assistant/src/shared/extensions/context_extensions.dart';
 import 'package:roleplay_assistant/src/shared/widgets/buttons/button.dart';
@@ -335,7 +336,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       // Only display the name for now
                       onTap: () {
-                        // TODO: navigate to roleplay details / editor
+                        // Navigate to the RoleplayScreen and pass the selected
+                        // roleplay's name. Using a direct MaterialPageRoute so
+                        // we don't need to regenerate auto_route code.
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (BuildContext ctx) =>
+                                RoleplayScreen(name: title),
+                          ),
+                        );
                       },
                       onLongPress: () => _showOptionsForRoleplay(r),
                     ),
