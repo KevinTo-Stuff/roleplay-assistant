@@ -303,36 +303,40 @@ class _HomeScreenState extends State<HomeScreen> {
                             EdgeInsets.symmetric(vertical: Dimens.minSpacing),
                       ),
                     );
-                    listChildren.addAll(active
-                        .map((Roleplay r) => _buildRoleplayCard(context, r)));
+                    listChildren.addAll(
+                      active
+                          .map((Roleplay r) => _buildRoleplayCard(context, r)),
+                    );
                   }
 
                   if (inactive.isNotEmpty) {
                     listChildren.add(const SizedBox(height: Dimens.spacing));
-                    listChildren.add(ExpansionTile(
-                      childrenPadding: const EdgeInsets.fromLTRB(
-                        0,
-                        Dimens.spacing,
-                        0,
-                        Dimens.spacing,
-                      ),
-                      title: Text(
-                        'Inactive Roleplays',
-                        style: context.textTheme.titleMedium,
-                      ),
-                      initiallyExpanded: false,
-                      children: inactive
-                          .map(
-                            (Roleplay r) => Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 0,
-                                vertical: Dimens.minSpacing / 2,
+                    listChildren.add(
+                      ExpansionTile(
+                        childrenPadding: const EdgeInsets.fromLTRB(
+                          0,
+                          Dimens.spacing,
+                          0,
+                          Dimens.spacing,
+                        ),
+                        title: Text(
+                          'Inactive Roleplays',
+                          style: context.textTheme.titleMedium,
+                        ),
+                        initiallyExpanded: false,
+                        children: inactive
+                            .map(
+                              (Roleplay r) => Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 0,
+                                  vertical: Dimens.minSpacing / 2,
+                                ),
+                                child: _buildRoleplayCard(context, r),
                               ),
-                              child: _buildRoleplayCard(context, r),
-                            ),
-                          )
-                          .toList(),
-                    ));
+                            )
+                            .toList(),
+                      ),
+                    );
                   }
 
                   return ListView(
