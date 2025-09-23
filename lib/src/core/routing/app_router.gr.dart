@@ -27,6 +27,53 @@ class HomeRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [RoleplayScreen]
+class RoleplayRoute extends PageRouteInfo<RoleplayRouteArgs> {
+  RoleplayRoute({
+    Key? key,
+    required Roleplay roleplay,
+    List<PageRouteInfo>? children,
+  }) : super(
+          RoleplayRoute.name,
+          args: RoleplayRouteArgs(key: key, roleplay: roleplay),
+          initialChildren: children,
+        );
+
+  static const String name = 'RoleplayRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<RoleplayRouteArgs>();
+      return RoleplayScreen(key: args.key, roleplay: args.roleplay);
+    },
+  );
+}
+
+class RoleplayRouteArgs {
+  const RoleplayRouteArgs({this.key, required this.roleplay});
+
+  final Key? key;
+
+  final Roleplay roleplay;
+
+  @override
+  String toString() {
+    return 'RoleplayRouteArgs{key: $key, roleplay: $roleplay}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! RoleplayRouteArgs) return false;
+    return key == other.key && roleplay == other.roleplay;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ roleplay.hashCode;
+}
+
+/// generated route for
 /// [SettingsScreen]
 class SettingsRoute extends PageRouteInfo<void> {
   const SettingsRoute({List<PageRouteInfo>? children})

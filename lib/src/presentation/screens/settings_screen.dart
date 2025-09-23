@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:auto_route/auto_route.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+// Project imports:
 import 'package:roleplay_assistant/src/core/settings/settings_cubit.dart';
 import 'package:roleplay_assistant/src/core/settings/settings_state.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
 class SettingsScreen extends StatefulWidget {
