@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:auto_route/auto_route.dart';
-import 'package:roleplay_assistant/src/core/routing/app_router.dart';
 
 // Project imports:
+import 'package:roleplay_assistant/src/shared/locator.dart';
+import 'package:roleplay_assistant/src/shared/services/roleplay/roleplay_storage.dart';
+import 'package:roleplay_assistant/src/shared/models/character.dart';
+import 'package:roleplay_assistant/src/presentation/screens/character_screen.dart';
 import 'package:roleplay_assistant/src/core/theme/dimens.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay.dart';
 import 'package:roleplay_assistant/src/shared/widgets/buttons/square_button.dart';
@@ -71,11 +74,23 @@ class RoleplayScreen extends StatelessWidget {
 
                 final List<Widget> items = <Widget>[
                   SquareButton.primary(
-                    onPressed: () {
-                      // Navigate to the Characters screen with the current
-                      // roleplay's characters using AutoRoute.
-                      context.router.push(CharacterRoute(
-                        characters: roleplay.characters,
+                    onPressed: () async {
+                      // Navigate to the Characters screen and provide an
+                      // onChanged callback so edits/deletes persist to storage.
+                      final RoleplayStorage storage =
+                          locator<RoleplayStorage>();
+                      await Navigator.of(context).push(MaterialPageRoute<void>(
+                        builder: (BuildContext ctx) => CharacterScreen(
+                          characters: roleplay.characters,
+                          onChanged: (List<Character> updated) async {
+                            final Roleplay updatedRp = roleplay.copyWith(
+                              characters: updated,
+                            );
+                            if (updatedRp.id != null) {
+                              await storage.update(updatedRp);
+                            }
+                          },
+                        ),
                       ),);
                     },
                     icon: const Icon(Icons.person),
