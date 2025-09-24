@@ -1,1 +1,81 @@
-part 'character_creator_cubit.dart';
+// Flutter / package imports
+import 'package:equatable/equatable.dart';
+
+import 'package:roleplay_assistant/src/shared/models/character.dart';
+
+/// State for the Character Creator form.
+///
+/// Keeps simple, serializable form fields and submission status.
+class CharacterCreatorState extends Equatable {
+  const CharacterCreatorState({
+    required this.firstName,
+    this.middleName,
+    required this.lastName,
+    required this.gender,
+    required this.age,
+    this.description,
+    this.isSubmitting = false,
+    this.isSuccess = false,
+    this.errorMessage,
+  });
+
+  factory CharacterCreatorState.initial() => const CharacterCreatorState(
+        firstName: '',
+        middleName: null,
+        lastName: '',
+        gender: Gender.other,
+        age: 0,
+      );
+
+  final String firstName;
+  final String? middleName;
+  final String lastName;
+  final Gender gender;
+  final int age;
+  final String? description;
+
+  // submission status
+  final bool isSubmitting;
+  final bool isSuccess;
+  final String? errorMessage;
+
+  CharacterCreatorState copyWith({
+    String? firstName,
+    String? middleName,
+    String? lastName,
+    Gender? gender,
+    int? age,
+    String? description,
+    bool? isSubmitting,
+    bool? isSuccess,
+    String? errorMessage,
+  }) {
+    return CharacterCreatorState(
+      firstName: firstName ?? this.firstName,
+      middleName: middleName ?? this.middleName,
+      lastName: lastName ?? this.lastName,
+      gender: gender ?? this.gender,
+      age: age ?? this.age,
+      description: description ?? this.description,
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+      isSuccess: isSuccess ?? this.isSuccess,
+      errorMessage: errorMessage ?? this.errorMessage,
+    );
+  }
+
+  bool get isValid =>
+      firstName.trim().isNotEmpty && lastName.trim().isNotEmpty && age >= 0;
+
+  @override
+  List<Object?> get props => <Object?>[
+        firstName,
+        middleName,
+        lastName,
+        gender,
+        age,
+        description,
+        isSubmitting,
+        isSuccess,
+        errorMessage,
+      ];
+}

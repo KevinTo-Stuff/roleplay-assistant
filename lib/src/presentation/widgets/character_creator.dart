@@ -1,7 +1,10 @@
 // Flutter imports
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports
+import 'package:roleplay_assistant/src/presentation/blocs/character_creator_cubit.dart';
+import 'package:roleplay_assistant/src/presentation/blocs/character_creator_state.dart';
 import 'package:roleplay_assistant/src/shared/models/character.dart';
 
 /// A minimal inline character creator form used by the characters screen.
@@ -16,36 +19,18 @@ class CharacterCreator extends StatefulWidget {
 
 class _CharacterCreatorState extends State<CharacterCreator> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _first = TextEditingController();
-  final TextEditingController _middle = TextEditingController();
-  final TextEditingController _last = TextEditingController();
-  final TextEditingController _age = TextEditingController();
-  Gender _gender = Gender.other;
-  final TextEditingController _desc = TextEditingController();
+  late final CharacterCreatorCubit _cubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _cubit = CharacterCreatorCubit();
+  }
 
   @override
   void dispose() {
-    _first.dispose();
-    _middle.dispose();
-    _last.dispose();
-    _age.dispose();
-    _desc.dispose();
+    _cubit.close();
     super.dispose();
-  }
-
-  void _onSave() {
-    if (!_formKey.currentState!.validate()) return;
-    final String id = '${DateTime.now().toIso8601String()}-${UniqueKey()}';
-    final Character created = Character(
-      id: id,
-      firstName: _first.text.trim(),
-      middleName: _middle.text.trim().isEmpty ? null : _middle.text.trim(),
-      lastName: _last.text.trim(),
-      gender: _gender,
-      age: int.tryParse(_age.text.trim()) ?? 0,
-      description: _desc.text.trim().isEmpty ? null : _desc.text.trim(),
-    );
-    Navigator.of(context).pop(created);
   }
 
   @override
@@ -57,79 +42,130 @@ class _CharacterCreatorState extends State<CharacterCreator> {
         right: 16,
         top: 16,
       ),
-      child: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text('New Character',
-                  style: Theme.of(context).textTheme.titleLarge,),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _first,
-                decoration: const InputDecoration(labelText: 'First name'),
-                validator: (String? v) =>
-                    (v == null || v.trim().isEmpty) ? 'Required' : null,
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _middle,
-                decoration:
-                    const InputDecoration(labelText: 'Middle name (optional)'),
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _last,
-                decoration: const InputDecoration(labelText: 'Last name'),
-                validator: (String? v) =>
-                    (v == null || v.trim().isEmpty) ? 'Required' : null,
-              ),
-              const SizedBox(height: 8),
-              DropdownButtonFormField<Gender>(
-                initialValue: _gender,
-                decoration: const InputDecoration(labelText: 'Gender'),
-                items: Gender.values
-                    .map((Gender g) => DropdownMenuItem<Gender>(
-                        value: g, child: Text(g.toShortString()),),)
-                    .toList(),
-                onChanged: (Gender? g) {
-                  if (g == null) return;
-                  setState(() => _gender = g);
-                },
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _age,
-                decoration: const InputDecoration(labelText: 'Age'),
-                keyboardType: TextInputType.number,
-                validator: (String? v) {
-                  if (v == null || v.trim().isEmpty) return 'Required';
-                  final int? parsed = int.tryParse(v.trim());
-                  if (parsed == null || parsed < 0) return 'Invalid age';
-                  return null;
-                },
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: _desc,
-                decoration:
-                    const InputDecoration(labelText: 'Description (optional)'),
-                maxLines: 3,
-              ),
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  TextButton(
+      child: BlocProvider<CharacterCreatorCubit>.value(
+        value: _cubit,
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'New Character',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 8),
+                BlocBuilder<CharacterCreatorCubit, CharacterCreatorState>(
+                    builder:
+                        (BuildContext context, CharacterCreatorState state) {
+                  return TextFormField(
+                    initialValue: state.firstName,
+                    decoration: const InputDecoration(labelText: 'First name'),
+                    validator: (String? v) =>
+                        (v == null || v.trim().isEmpty) ? 'Required' : null,
+                    onChanged: (String v) => _cubit.updateFirstName(v),
+                  );
+                },),
+                const SizedBox(height: 8),
+                BlocBuilder<CharacterCreatorCubit, CharacterCreatorState>(
+                    builder:
+                        (BuildContext context, CharacterCreatorState state) {
+                  return TextFormField(
+                    initialValue: state.middleName,
+                    decoration: const InputDecoration(
+                        labelText: 'Middle name (optional)',),
+                    onChanged: (String v) =>
+                        _cubit.updateMiddleName(v.isEmpty ? null : v),
+                  );
+                },),
+                const SizedBox(height: 8),
+                BlocBuilder<CharacterCreatorCubit, CharacterCreatorState>(
+                    builder:
+                        (BuildContext context, CharacterCreatorState state) {
+                  return TextFormField(
+                    initialValue: state.lastName,
+                    decoration: const InputDecoration(labelText: 'Last name'),
+                    validator: (String? v) =>
+                        (v == null || v.trim().isEmpty) ? 'Required' : null,
+                    onChanged: (String v) => _cubit.updateLastName(v),
+                  );
+                },),
+                const SizedBox(height: 8),
+                BlocBuilder<CharacterCreatorCubit, CharacterCreatorState>(
+                    builder:
+                        (BuildContext context, CharacterCreatorState state) {
+                  final Gender current = state.gender;
+                  return DropdownButtonFormField<Gender>(
+                    initialValue: current,
+                    decoration: const InputDecoration(labelText: 'Gender'),
+                    items: Gender.values
+                        .map(
+                          (Gender g) => DropdownMenuItem<Gender>(
+                            value: g,
+                            child: Text(g.toShortString()),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (Gender? g) {
+                      if (g == null) return;
+                      _cubit.updateGender(g);
+                    },
+                  );
+                },),
+                const SizedBox(height: 8),
+                BlocBuilder<CharacterCreatorCubit, CharacterCreatorState>(
+                    builder:
+                        (BuildContext context, CharacterCreatorState state) {
+                  return TextFormField(
+                    initialValue: state.age.toString(),
+                    decoration: const InputDecoration(labelText: 'Age'),
+                    keyboardType: TextInputType.number,
+                    validator: (String? v) {
+                      if (v == null || v.trim().isEmpty) return 'Required';
+                      final int? parsed = int.tryParse(v.trim());
+                      if (parsed == null || parsed < 0) return 'Invalid age';
+                      return null;
+                    },
+                    onChanged: (String v) => _cubit.updateAge(int.tryParse(v) ?? 0),
+                  );
+                },),
+                const SizedBox(height: 8),
+                BlocBuilder<CharacterCreatorCubit, CharacterCreatorState>(
+                    builder:
+                        (BuildContext context, CharacterCreatorState state) {
+                  return TextFormField(
+                    initialValue: state.description,
+                    decoration: const InputDecoration(
+                        labelText: 'Description (optional)',),
+                    maxLines: 3,
+                    onChanged: (String v) =>
+                        _cubit.updateDescription(v.isEmpty ? null : v),
+                  );
+                },),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    TextButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Cancel'),),
-                  const SizedBox(width: 8),
-                  ElevatedButton(onPressed: _onSave, child: const Text('Save')),
-                ],
-              ),
-            ],
+                      child: const Text('Cancel'),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                        onPressed: () async {
+                          if (!_formKey.currentState!.validate()) return;
+                          final Character? created = await _cubit.submit();
+                          if (!mounted) return;
+                          if (created != null) {
+                            Navigator.of(context).pop(created);
+                          }
+                        },
+                        child: const Text('Save'),),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
