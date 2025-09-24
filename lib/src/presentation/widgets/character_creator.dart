@@ -339,14 +339,15 @@ class _CharacterCreatorState extends State<CharacterCreator> {
                 child: FloatingActionButton(
                   onPressed: () async {
                     if (!_formKey.currentState!.validate()) return;
+                    final NavigatorState navigator = Navigator.of(context);
                     final Character? created = await _cubit.submit();
                     if (!mounted) return;
                     if (created != null) {
-                      Navigator.of(context).pop(created);
+                      navigator.pop(created);
                     }
                   },
                   tooltip: 'Save',
-                  child: const FaIcon(FontAwesomeIcons.save),
+                  child: const FaIcon(FontAwesomeIcons.solidFloppyDisk),
                 ),
               ),
             ],

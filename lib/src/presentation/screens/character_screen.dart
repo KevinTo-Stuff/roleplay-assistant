@@ -37,7 +37,10 @@ class _CharacterScreenState extends State<CharacterScreen> {
   }
 
   Future<void> _openCreator() async {
-    final Character? created = await Navigator.of(context).push<Character?>(
+    final NavigatorState navigator = Navigator.of(context);
+    final ScaffoldMessengerState scaffoldMessenger =
+        ScaffoldMessenger.of(context);
+    final Character? created = await navigator.push<Character?>(
       MaterialPageRoute<Character?>(
         fullscreenDialog: true,
         builder: (BuildContext ctx) => Scaffold(
@@ -47,10 +50,11 @@ class _CharacterScreenState extends State<CharacterScreen> {
       ),
     );
 
+    if (!mounted) return;
     if (created != null) {
       setState(() => _characters.add(created));
       widget.onChanged?.call(List<Character>.from(_characters));
-      ScaffoldMessenger.of(context)
+      scaffoldMessenger
           .showSnackBar(const SnackBar(content: Text('Character added')));
     }
   }
@@ -128,6 +132,9 @@ class _CharacterScreenState extends State<CharacterScreen> {
                     trailing: IconButton(
                       icon: const Icon(Icons.delete_outline),
                       onPressed: () async {
+                        final NavigatorState navigator = Navigator.of(context);
+                        final ScaffoldMessengerState scaffoldMessenger =
+                            ScaffoldMessenger.of(context);
                         final bool? confirm = await showDialog<bool>(
                           context: context,
                           builder: (BuildContext ctx) {
@@ -137,11 +144,11 @@ class _CharacterScreenState extends State<CharacterScreen> {
                                   'Are you sure you want to delete "$fullName"?'),
                               actions: <Widget>[
                                 TextButton(
-                                  onPressed: () => Navigator.of(ctx).pop(false),
+                                  onPressed: () => navigator.pop(false),
                                   child: const Text('Cancel'),
                                 ),
                                 TextButton(
-                                  onPressed: () => Navigator.of(ctx).pop(true),
+                                  onPressed: () => navigator.pop(true),
                                   child: const Text('Delete'),
                                 ),
                               ],
@@ -149,14 +156,15 @@ class _CharacterScreenState extends State<CharacterScreen> {
                           },
                         );
 
+                        if (!mounted) return;
                         if (confirm == true) {
                           final Character removed = _characters[index];
                           setState(() => _characters.removeAt(index));
                           widget.onChanged
                               ?.call(List<Character>.from(_characters));
 
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          scaffoldMessenger.hideCurrentSnackBar();
+                          scaffoldMessenger.showSnackBar(
                             SnackBar(
                               content: Text('$fullName deleted'),
                               action: SnackBarAction(
