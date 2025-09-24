@@ -98,7 +98,7 @@ class SquareButton extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
+      children: <Widget>[
         if (icon != null)
           IconTheme.merge(
             data: IconThemeData(color: contentColor, size: Dimens.iconSize),
@@ -117,13 +117,13 @@ class SquareButton extends StatelessWidget {
     );
 
     final ButtonStyle commonStyle = ButtonStyle(
-      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
         RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Dimens.radius),
         ),
       ),
-      minimumSize: MaterialStateProperty.all<Size>(Size(size, size)),
-      padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.zero),
+      minimumSize: WidgetStateProperty.all<Size>(Size(size, size)),
+      padding: WidgetStateProperty.all<EdgeInsets>(EdgeInsets.zero),
     );
 
     switch (type) {

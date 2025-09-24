@@ -112,7 +112,7 @@ class RoleplayScreen extends StatelessWidget {
                   spacing: spacing,
                   runSpacing: spacing,
                   children: items
-                      .map((w) => SizedBox(width: itemSize, child: w))
+                      .map((Widget w) => SizedBox(width: itemSize, child: w))
                       .toList(),
                 );
               },
