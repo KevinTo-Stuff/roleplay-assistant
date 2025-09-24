@@ -24,6 +24,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final RoleplayStorage _storage = locator<RoleplayStorage>();
   late Future<List<Roleplay>> _futureRoleplays;
+  bool _isRefreshing = false;
 
   @override
   void initState() {
@@ -33,8 +34,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _refresh() async {
     setState(() {
+      _isRefreshing = true;
       _futureRoleplays = _storage.list();
     });
+
+    try {
+      // Await the future so we can turn off the indicator after load finishes.
+      await _futureRoleplays;
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isRefreshing = false;
+        });
+      }
+    }
   }
 
   Future<void> _showCreateDialog() async {
@@ -269,10 +282,17 @@ class _HomeScreenState extends State<HomeScreen> {
               style: context.textTheme.bodyMedium,
             ),
             const SizedBox(height: Dimens.spacing),
+            // Show a small refresh indicator when loading roleplays
+            if (_isRefreshing)
+              const Padding(
+                padding: EdgeInsets.only(bottom: Dimens.minSpacing),
+                child: LinearProgressIndicator(minHeight: 3.0),
+              ),
             Button.outline(
               title: 'Settings',
-              onPressed: () {
-                context.router.push(const SettingsRoute());
+              onPressed: () async {
+                await context.router.push(const SettingsRoute());
+                await _refresh();
               },
             ),
             const SizedBox(height: Dimens.spacing),
@@ -418,14 +438,15 @@ class _HomeScreenState extends State<HomeScreen> {
             Icons.more_vert,
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
-          onTap: () {
-            // Navigate to the Characters screen with the current
-            // roleplay's characters using AutoRoute.
-            context.router.push(
+          onTap: () async {
+            // Navigate to the Roleplay screen and refresh when returning
+            // so any edits performed there are reflected in the list.
+            await context.router.push(
               RoleplayRoute(
                 roleplay: r,
               ),
             );
+            await _refresh();
           },
           onLongPress: () => _showOptionsForRoleplay(r),
         ),
