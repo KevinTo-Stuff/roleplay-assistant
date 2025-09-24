@@ -71,12 +71,6 @@ class _CharacterCreatorState extends State<CharacterCreator> {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(
-                              'New Character',
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            const SizedBox(height: 8),
-
                             // Basic information section
                             Container(
                               width: double.infinity,

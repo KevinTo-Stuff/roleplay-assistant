@@ -41,7 +41,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
       MaterialPageRoute<Character?>(
         fullscreenDialog: true,
         builder: (BuildContext ctx) => Scaffold(
-          appBar: AppBar(title: const Text('Create Character')),
+          appBar: AppBar(title: const Text('New Character')),
           body: const SafeArea(child: CharacterCreator()),
         ),
       ),
@@ -78,7 +78,8 @@ class _CharacterScreenState extends State<CharacterScreen> {
 
                 // Use a stable key when possible (id), otherwise fall back to index
                 final Key dismissKey = ValueKey<String>(
-                    c.id.isNotEmpty ? c.id : 'character_$index',);
+                  c.id.isNotEmpty ? c.id : 'character_$index',
+                );
 
                 return Dismissible(
                   key: dismissKey,
