@@ -9,6 +9,7 @@ import 'package:auto_route/auto_route.dart';
 // Project imports:
 import '../../shared/models/character.dart';
 import '../widgets/character_creator.dart';
+import '../widgets/character_view.dart';
 
 @RoutePage()
 class CharacterScreen extends StatefulWidget {
@@ -29,6 +30,7 @@ class CharacterScreen extends StatefulWidget {
 
 class _CharacterScreenState extends State<CharacterScreen> {
   late List<Character> _characters;
+  int? _selectedIndex;
 
   @override
   void initState() {
@@ -85,6 +87,28 @@ class _CharacterScreenState extends State<CharacterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // If a character is selected, show the CharacterView full-screen in-place.
+    if (_selectedIndex != null) {
+      final Character selected = _characters[_selectedIndex!];
+      return PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (bool didPop, dynamic result) {
+          setState(() => _selectedIndex = null);
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Character'),
+            leading: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () => setState(() => _selectedIndex = null),
+              tooltip: 'Close',
+            ),
+          ),
+          body: SafeArea(child: CharacterView(character: selected)),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Characters'),
@@ -149,6 +173,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
                     );
                   },
                   child: ListTile(
+                    onTap: () => setState(() => _selectedIndex = index),
                     title: Text(fullName),
                     subtitle: Text(
                       'Age: ${c.age} • Gender: ${c.gender.toShortString()}',

@@ -9,10 +9,6 @@ import 'package:roleplay_assistant/src/presentation/blocs/character_creator_stat
 
 /// Cubit to manage the `CharacterCreator` form state.
 class CharacterCreatorCubit extends Cubit<CharacterCreatorState> {
-  /// If [originalId] is provided the cubit will reuse that id when building
-  /// the `Character` on save. This allows the creator to act as an editor.
-  final String? originalId;
-
   CharacterCreatorCubit({this.originalId, Character? initialCharacter})
       : super(
           initialCharacter != null
@@ -30,6 +26,10 @@ class CharacterCreatorCubit extends Cubit<CharacterCreatorState> {
                 )
               : CharacterCreatorState.initial(),
         );
+
+  /// If [originalId] is provided the cubit will reuse that id when building
+  /// the `Character` on save. This allows the creator to act as an editor.
+  final String? originalId;
 
   void updateFirstName(String value) => emit(
         state.copyWith(firstName: value, isSuccess: false, errorMessage: null),
