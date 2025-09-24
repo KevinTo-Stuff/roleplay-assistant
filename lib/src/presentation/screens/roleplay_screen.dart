@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:auto_route/auto_route.dart';
+import 'package:roleplay_assistant/src/core/routing/app_router.dart';
 
 // Project imports:
-import 'package:roleplay_assistant/src/shared/models/roleplay.dart';
 import 'package:roleplay_assistant/src/core/theme/dimens.dart';
-// Project imports:
+import 'package:roleplay_assistant/src/shared/models/roleplay.dart';
 import 'package:roleplay_assistant/src/shared/widgets/buttons/square_button.dart';
 
 @RoutePage()
@@ -71,7 +71,13 @@ class RoleplayScreen extends StatelessWidget {
 
                 final List<Widget> items = <Widget>[
                   SquareButton.primary(
-                    onPressed: () {},
+                    onPressed: () {
+                      // Navigate to the Characters screen with the current
+                      // roleplay's characters using AutoRoute.
+                      context.router.push(CharacterRoute(
+                        characters: roleplay.characters,
+                      ),);
+                    },
                     icon: const Icon(Icons.person),
                     size: itemSize,
                     label: 'Characters',

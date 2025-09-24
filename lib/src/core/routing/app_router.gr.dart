@@ -11,6 +11,56 @@
 part of 'app_router.dart';
 
 /// generated route for
+/// [CharacterScreen]
+class CharacterRoute extends PageRouteInfo<CharacterRouteArgs> {
+  CharacterRoute({
+    Key? key,
+    List<Character> characters = const [],
+    List<PageRouteInfo>? children,
+  }) : super(
+          CharacterRoute.name,
+          args: CharacterRouteArgs(key: key, characters: characters),
+          initialChildren: children,
+        );
+
+  static const String name = 'CharacterRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<CharacterRouteArgs>(
+        orElse: () => const CharacterRouteArgs(),
+      );
+      return CharacterScreen(key: args.key, characters: args.characters);
+    },
+  );
+}
+
+class CharacterRouteArgs {
+  const CharacterRouteArgs({this.key, this.characters = const []});
+
+  final Key? key;
+
+  final List<Character> characters;
+
+  @override
+  String toString() {
+    return 'CharacterRouteArgs{key: $key, characters: $characters}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! CharacterRouteArgs) return false;
+    return key == other.key &&
+        const ListEquality().equals(characters, other.characters);
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ const ListEquality().hash(characters);
+}
+
+/// generated route for
 /// [HomeScreen]
 class HomeRoute extends PageRouteInfo<void> {
   const HomeRoute({List<PageRouteInfo>? children})

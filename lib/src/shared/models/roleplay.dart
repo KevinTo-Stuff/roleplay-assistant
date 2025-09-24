@@ -1,6 +1,11 @@
 // Flutter imports:
 import 'package:flutter/foundation.dart';
 
+// Project imports:
+import 'character.dart';
+
+// Local models:
+
 /// Model representing a Roleplay configuration.
 ///
 /// Fields:
@@ -23,13 +28,29 @@ class Roleplay {
                 json['settings'] as Map<String, dynamic>,
               )
             : null,
+        characters: json['characters'] is List
+            // ignore: always_specify_types
+            ? (json['characters'] as List)
+                // ignore: always_specify_types
+                .where((e) => e != null)
+                // ignore: always_specify_types
+                .map<Character>(
+                  // ignore: always_specify_types
+                  (e) => e is Character
+                      ? e
+                      : Character.fromJson(e as Map<String, dynamic>),
+                )
+                .toList()
+            : const <Character>[],
       );
+
   const Roleplay({
     this.id,
     required this.name,
     required this.active,
     required this.description,
     this.settings,
+    this.characters = const <Character>[],
   });
 
   /// Convenience factory that returns an empty/default Roleplay instance.
@@ -50,6 +71,7 @@ class Roleplay {
   final String description;
   final String? id;
   final Map<String, dynamic>? settings;
+  final List<Character> characters;
 
   Roleplay copyWith({
     String? id,
@@ -57,6 +79,7 @@ class Roleplay {
     bool? active,
     String? description,
     Map<String, dynamic>? settings,
+    List<Character>? characters,
   }) {
     return Roleplay(
       id: id ?? this.id,
@@ -64,6 +87,7 @@ class Roleplay {
       active: active ?? this.active,
       description: description ?? this.description,
       settings: settings ?? this.settings,
+      characters: characters ?? List<Character>.from(this.characters),
     );
   }
 
@@ -74,6 +98,7 @@ class Roleplay {
       'active': active,
       'description': description,
       if (settings != null) 'settings': settings,
+      'characters': characters.map((Character c) => c.toJson()).toList(),
     };
   }
 
@@ -95,10 +120,11 @@ class Roleplay {
         active,
         description,
         settings == null ? null : Object.hashAll(settings!.entries),
+        Object.hashAll(characters),
       );
 
   @override
   String toString() {
-    return 'Roleplay(id: $id, name: $name, active: $active, description: $description, settings: $settings)';
+    return 'Roleplay(id: $id, name: $name, active: $active, description: $description, settings: $settings, characters: $characters)';
   }
 }

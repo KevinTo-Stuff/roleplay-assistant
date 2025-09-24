@@ -40,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _showCreateDialog() async {
     final TextEditingController controller = TextEditingController();
+    final TextEditingController descController = TextEditingController();
 
     final String? result = await showModalBottomSheet<String>(
       context: context,
@@ -62,11 +63,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 controller: controller,
                 autofocus: true,
                 decoration: const InputDecoration(labelText: 'Name'),
+                textInputAction: TextInputAction.next,
+                onSubmitted: (String v) {
+                  // move focus to description when pressing next
+                  // (handled automatically by the keyboard in many platforms)
+                },
+              ),
+              const SizedBox(height: Dimens.minSpacing),
+              TextField(
+                controller: descController,
+                decoration: const InputDecoration(labelText: 'Description'),
+                maxLines: 3,
                 textInputAction: TextInputAction.done,
                 onSubmitted: (String v) {
-                  final String name = v.trim();
+                  final String name = controller.text.trim();
+                  final String description = v.trim();
                   if (name.isEmpty) return;
-                  Navigator.of(ctx).pop(name);
+                  Navigator.of(ctx)
+                      .pop(<String>[name, description].join('\u0000'));
                 },
               ),
               const SizedBox(height: Dimens.spacing),
@@ -81,8 +95,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ElevatedButton(
                     onPressed: () {
                       final String name = controller.text.trim();
+                      final String description = descController.text.trim();
                       if (name.isEmpty) return;
-                      Navigator.of(ctx).pop(name);
+                      Navigator.of(ctx)
+                          .pop(<String>[name, description].join('\u0000'));
                     },
                     child: const Text('Create'),
                   ),
@@ -94,12 +110,19 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
 
-    if (result == null || result.trim().isEmpty) return;
+    if (result == null) return;
+
+    // We passed name and description joined by a null separator above.
+    final List<String> parts = result.split('\u0000');
+    final String name = parts.isNotEmpty ? parts[0].trim() : '';
+    final String description = parts.length > 1 ? parts[1].trim() : '';
+    if (name.isEmpty) return;
 
     final Roleplay rp = Roleplay(
-      name: result.trim(),
+      name: name,
       active: true,
-      description: '',
+      description: description,
+      // characters left unspecified -> defaults to empty list
     );
 
     await _storage.create(rp);
@@ -397,9 +420,11 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
           onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (BuildContext ctx) => RoleplayScreen(roleplay: r),
+            // Navigate to the Characters screen with the current
+            // roleplay's characters using AutoRoute.
+            context.router.push(
+              RoleplayRoute(
+                roleplay: r,
               ),
             );
           },
