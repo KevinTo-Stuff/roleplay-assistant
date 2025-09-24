@@ -7,7 +7,6 @@ import 'package:auto_route/auto_route.dart';
 // Project imports:
 import 'package:roleplay_assistant/src/core/routing/app_router.dart';
 import 'package:roleplay_assistant/src/core/theme/dimens.dart';
-import 'package:roleplay_assistant/src/presentation/screens/roleplay_screen.dart';
 import 'package:roleplay_assistant/src/shared/extensions/context_extensions.dart';
 import 'package:roleplay_assistant/src/shared/locator.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay.dart';

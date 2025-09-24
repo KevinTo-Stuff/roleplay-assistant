@@ -33,7 +33,7 @@ class CharacterScreen extends StatelessWidget {
                 final String fullName = <String?>[
                   c.firstName,
                   c.middleName,
-                  c.lastName
+                  c.lastName,
                 ]
                     .where((String? s) => s != null && s.trim().isNotEmpty)
                     .map((String? s) => s!.trim())
@@ -41,7 +41,8 @@ class CharacterScreen extends StatelessWidget {
                 return ListTile(
                   title: Text(fullName),
                   subtitle: Text(
-                      'Age: ${c.age} • Gender: ${c.gender.toShortString()}'),
+                    'Age: ${c.age} • Gender: ${c.gender.toShortString()}',
+                  ),
                 );
               },
             ),
