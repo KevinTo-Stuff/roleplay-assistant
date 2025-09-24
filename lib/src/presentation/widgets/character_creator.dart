@@ -342,8 +342,8 @@ class _CharacterCreatorState extends State<CharacterCreator> {
 
               // Floating Save FAB (matches style in CharacterScreen)
               Positioned(
-                right: 16,
-                bottom: 16 + MediaQuery.of(context).viewInsets.bottom,
+                right: 0,
+                bottom: 0,
                 child: FloatingActionButton(
                   onPressed: () async {
                     if (!_formKey.currentState!.validate()) return;
