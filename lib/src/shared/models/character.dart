@@ -8,13 +8,13 @@ extension GenderX on Gender {
   String toShortString() {
     switch (this) {
       case Gender.male:
-        return 'male';
+        return 'Male';
       case Gender.female:
-        return 'female';
+        return 'Female';
       case Gender.nonBinary:
-        return 'non-binary';
+        return 'Non-Binary';
       case Gender.other:
-        return 'other';
+        return 'Other';
     }
   }
 
