@@ -104,7 +104,12 @@ class _CharacterScreenState extends State<CharacterScreen> {
               tooltip: 'Close',
             ),
           ),
-          body: SafeArea(child: CharacterView(character: selected)),
+          body: SafeArea(
+            child: CharacterView(
+              character: selected,
+              onEdit: () => _openEditor(_selectedIndex!),
+            ),
+          ),
         ),
       );
     }

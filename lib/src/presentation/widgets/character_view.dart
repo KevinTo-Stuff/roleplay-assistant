@@ -9,9 +9,12 @@ import '../../shared/models/character.dart';
 /// This widget is intentionally self-contained so it can be used as the body
 /// of a page, dialog, or inline in layouts.
 class CharacterView extends StatelessWidget {
-  const CharacterView({super.key, required this.character});
+  const CharacterView({super.key, required this.character, this.onEdit});
 
   final Character character;
+
+  /// Optional callback invoked when the edit button is pressed.
+  final VoidCallback? onEdit;
 
   Widget _buildName(BuildContext context) {
     final String fullName = <String?>[
@@ -23,9 +26,23 @@ class CharacterView extends StatelessWidget {
         .map((String? s) => s!.trim())
         .join(' ');
 
-    return Text(
-      fullName,
-      style: Theme.of(context).textTheme.headlineSmall,
+    // Show the name with an optional edit button to the right.
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Expanded(
+          child: Text(
+            fullName,
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+        ),
+        // Edit button: enabled only when onEdit is provided.
+        IconButton(
+          icon: const Icon(Icons.edit),
+          tooltip: onEdit != null ? 'Edit' : null,
+          onPressed: onEdit,
+        ),
+      ],
     );
   }
 
@@ -98,10 +115,12 @@ class CharacterView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: character.stats.entries
-          .map((MapEntry<String, int> e) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2.0),
-                child: Text('${e.key}: ${e.value}'),
-              ),)
+          .map(
+            (MapEntry<String, int> e) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2.0),
+              child: Text('${e.key}: ${e.value}'),
+            ),
+          )
           .toList(),
     );
   }
@@ -111,10 +130,12 @@ class CharacterView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: character.resistances.entries
-          .map((MapEntry<String, ResistanceLevel> e) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2.0),
-                child: Text('${e.key}: ${e.value.toShortString()}'),
-              ),)
+          .map(
+            (MapEntry<String, ResistanceLevel> e) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2.0),
+              child: Text('${e.key}: ${e.value.toShortString()}'),
+            ),
+          )
           .toList(),
     );
   }
