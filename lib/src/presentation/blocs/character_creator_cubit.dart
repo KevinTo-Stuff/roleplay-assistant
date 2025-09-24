@@ -9,7 +9,27 @@ import 'package:roleplay_assistant/src/presentation/blocs/character_creator_stat
 
 /// Cubit to manage the `CharacterCreator` form state.
 class CharacterCreatorCubit extends Cubit<CharacterCreatorState> {
-  CharacterCreatorCubit() : super(CharacterCreatorState.initial());
+  /// If [originalId] is provided the cubit will reuse that id when building
+  /// the `Character` on save. This allows the creator to act as an editor.
+  final String? originalId;
+
+  CharacterCreatorCubit({this.originalId, Character? initialCharacter})
+      : super(
+          initialCharacter != null
+              ? CharacterCreatorState.initial().copyWith(
+                  firstName: initialCharacter.firstName,
+                  middleName: initialCharacter.middleName,
+                  lastName: initialCharacter.lastName,
+                  gender: initialCharacter.gender,
+                  age: initialCharacter.age,
+                  description: initialCharacter.description,
+                  positiveTraits:
+                      List<String>.from(initialCharacter.positiveTraits),
+                  negativeTraits:
+                      List<String>.from(initialCharacter.negativeTraits),
+                )
+              : CharacterCreatorState.initial(),
+        );
 
   void updateFirstName(String value) => emit(
         state.copyWith(firstName: value, isSuccess: false, errorMessage: null),
@@ -31,41 +51,64 @@ class CharacterCreatorCubit extends Cubit<CharacterCreatorState> {
 
   void updateDescription(String? value) => emit(
         state.copyWith(
-            description: value, isSuccess: false, errorMessage: null,),
+          description: value,
+          isSuccess: false,
+          errorMessage: null,
+        ),
       );
 
   // Traits management
   void addPositiveTrait(String trait) {
     final List<String> updated = List<String>.from(state.positiveTraits)
       ..add(trait);
-    emit(state.copyWith(
-        positiveTraits: updated, isSuccess: false, errorMessage: null,),);
+    emit(
+      state.copyWith(
+        positiveTraits: updated,
+        isSuccess: false,
+        errorMessage: null,
+      ),
+    );
   }
 
   void removePositiveTrait(String trait) {
     final List<String> updated = List<String>.from(state.positiveTraits)
       ..remove(trait);
-    emit(state.copyWith(
-        positiveTraits: updated, isSuccess: false, errorMessage: null,),);
+    emit(
+      state.copyWith(
+        positiveTraits: updated,
+        isSuccess: false,
+        errorMessage: null,
+      ),
+    );
   }
 
   void addNegativeTrait(String trait) {
     final List<String> updated = List<String>.from(state.negativeTraits)
       ..add(trait);
-    emit(state.copyWith(
-        negativeTraits: updated, isSuccess: false, errorMessage: null,),);
+    emit(
+      state.copyWith(
+        negativeTraits: updated,
+        isSuccess: false,
+        errorMessage: null,
+      ),
+    );
   }
 
   void removeNegativeTrait(String trait) {
     final List<String> updated = List<String>.from(state.negativeTraits)
       ..remove(trait);
-    emit(state.copyWith(
-        negativeTraits: updated, isSuccess: false, errorMessage: null,),);
+    emit(
+      state.copyWith(
+        negativeTraits: updated,
+        isSuccess: false,
+        errorMessage: null,
+      ),
+    );
   }
 
   /// Build a Character object from the current state. Does not emit state.
   Character buildCharacter() {
-    final String id =
+    final String id = originalId ??
         '${DateTime.now().toIso8601String()}-${Random().nextInt(1 << 32)}';
     return Character(
       id: id,

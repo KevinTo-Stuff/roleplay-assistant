@@ -14,7 +14,11 @@ import 'package:roleplay_assistant/src/shared/models/character.dart';
 /// On successful save this widget will call `Navigator.of(context).pop(created)`
 /// returning the created `Character` to the caller.
 class CharacterCreator extends StatefulWidget {
-  const CharacterCreator({super.key});
+  /// When [initial] is provided the creator will prefill fields for editing
+  /// and return an updated Character preserving the original id.
+  const CharacterCreator({super.key, this.initial});
+
+  final Character? initial;
 
   @override
   State<CharacterCreator> createState() => _CharacterCreatorState();
@@ -27,7 +31,11 @@ class _CharacterCreatorState extends State<CharacterCreator> {
   @override
   void initState() {
     super.initState();
-    _cubit = CharacterCreatorCubit();
+    // Construct cubit with original id and initial character if editing
+    _cubit = CharacterCreatorCubit(
+      originalId: widget.initial?.id,
+      initialCharacter: widget.initial,
+    );
   }
 
   @override

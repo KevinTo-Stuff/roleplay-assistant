@@ -59,6 +59,30 @@ class _CharacterScreenState extends State<CharacterScreen> {
     }
   }
 
+  Future<void> _openEditor(int index) async {
+    final NavigatorState navigator = Navigator.of(context);
+    final ScaffoldMessengerState scaffoldMessenger =
+        ScaffoldMessenger.of(context);
+    final Character original = _characters[index];
+    final Character? updated = await navigator.push<Character?>(
+      MaterialPageRoute<Character?>(
+        fullscreenDialog: true,
+        builder: (BuildContext ctx) => Scaffold(
+          appBar: AppBar(title: const Text('Edit Character')),
+          body: SafeArea(child: CharacterCreator(initial: original)),
+        ),
+      ),
+    );
+
+    if (!mounted) return;
+    if (updated != null) {
+      setState(() => _characters[index] = updated);
+      widget.onChanged?.call(List<Character>.from(_characters));
+      scaffoldMessenger
+          .showSnackBar(const SnackBar(content: Text('Character updated')));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,60 +153,71 @@ class _CharacterScreenState extends State<CharacterScreen> {
                     subtitle: Text(
                       'Age: ${c.age} • Gender: ${c.gender.toShortString()}',
                     ),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete_outline),
-                      onPressed: () async {
-                        final NavigatorState navigator = Navigator.of(context);
-                        final ScaffoldMessengerState scaffoldMessenger =
-                            ScaffoldMessenger.of(context);
-                        final bool? confirm = await showDialog<bool>(
-                          context: context,
-                          builder: (BuildContext ctx) {
-                            return AlertDialog(
-                              title: const Text('Delete Character'),
-                              content: Text(
-                                  'Are you sure you want to delete "$fullName"?'),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () => navigator.pop(false),
-                                  child: const Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () => navigator.pop(true),
-                                  child: const Text('Delete'),
-                                ),
-                              ],
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        IconButton(
+                          icon: const Icon(Icons.edit_outlined),
+                          onPressed: () => _openEditor(index),
+                          tooltip: 'Edit',
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete_outline),
+                          onPressed: () async {
+                            final NavigatorState navigator =
+                                Navigator.of(context);
+                            final ScaffoldMessengerState scaffoldMessenger =
+                                ScaffoldMessenger.of(context);
+                            final bool? confirm = await showDialog<bool>(
+                              context: context,
+                              builder: (BuildContext ctx) {
+                                return AlertDialog(
+                                  title: const Text('Delete Character'),
+                                  content: Text(
+                                      'Are you sure you want to delete "$fullName"?'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () => navigator.pop(false),
+                                      child: const Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () => navigator.pop(true),
+                                      child: const Text('Delete'),
+                                    ),
+                                  ],
+                                );
+                              },
                             );
+
+                            if (!mounted) return;
+                            if (confirm == true) {
+                              final Character removed = _characters[index];
+                              setState(() => _characters.removeAt(index));
+                              widget.onChanged
+                                  ?.call(List<Character>.from(_characters));
+
+                              scaffoldMessenger.hideCurrentSnackBar();
+                              scaffoldMessenger.showSnackBar(
+                                SnackBar(
+                                  content: Text('$fullName deleted'),
+                                  action: SnackBarAction(
+                                    label: 'Undo',
+                                    onPressed: () {
+                                      setState(() {
+                                        final int insertAt =
+                                            index <= _characters.length
+                                                ? index
+                                                : _characters.length;
+                                        _characters.insert(insertAt, removed);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              );
+                            }
                           },
-                        );
-
-                        if (!mounted) return;
-                        if (confirm == true) {
-                          final Character removed = _characters[index];
-                          setState(() => _characters.removeAt(index));
-                          widget.onChanged
-                              ?.call(List<Character>.from(_characters));
-
-                          scaffoldMessenger.hideCurrentSnackBar();
-                          scaffoldMessenger.showSnackBar(
-                            SnackBar(
-                              content: Text('$fullName deleted'),
-                              action: SnackBarAction(
-                                label: 'Undo',
-                                onPressed: () {
-                                  setState(() {
-                                    final int insertAt =
-                                        index <= _characters.length
-                                            ? index
-                                            : _characters.length;
-                                    _characters.insert(insertAt, removed);
-                                  });
-                                },
-                              ),
-                            ),
-                          );
-                        }
-                      },
+                        ),
+                      ],
                     ),
                   ),
                 );
