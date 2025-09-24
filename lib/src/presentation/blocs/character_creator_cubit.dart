@@ -12,13 +12,16 @@ class CharacterCreatorCubit extends Cubit<CharacterCreatorState> {
   CharacterCreatorCubit() : super(CharacterCreatorState.initial());
 
   void updateFirstName(String value) => emit(
-      state.copyWith(firstName: value, isSuccess: false, errorMessage: null),);
+        state.copyWith(firstName: value, isSuccess: false, errorMessage: null),
+      );
 
   void updateMiddleName(String? value) => emit(
-      state.copyWith(middleName: value, isSuccess: false, errorMessage: null),);
+        state.copyWith(middleName: value, isSuccess: false, errorMessage: null),
+      );
 
   void updateLastName(String value) => emit(
-      state.copyWith(lastName: value, isSuccess: false, errorMessage: null),);
+        state.copyWith(lastName: value, isSuccess: false, errorMessage: null),
+      );
 
   void updateGender(Gender value) =>
       emit(state.copyWith(gender: value, isSuccess: false, errorMessage: null));
@@ -27,7 +30,38 @@ class CharacterCreatorCubit extends Cubit<CharacterCreatorState> {
       emit(state.copyWith(age: value, isSuccess: false, errorMessage: null));
 
   void updateDescription(String? value) => emit(
-      state.copyWith(description: value, isSuccess: false, errorMessage: null),);
+        state.copyWith(
+            description: value, isSuccess: false, errorMessage: null,),
+      );
+
+  // Traits management
+  void addPositiveTrait(String trait) {
+    final List<String> updated = List<String>.from(state.positiveTraits)
+      ..add(trait);
+    emit(state.copyWith(
+        positiveTraits: updated, isSuccess: false, errorMessage: null,),);
+  }
+
+  void removePositiveTrait(String trait) {
+    final List<String> updated = List<String>.from(state.positiveTraits)
+      ..remove(trait);
+    emit(state.copyWith(
+        positiveTraits: updated, isSuccess: false, errorMessage: null,),);
+  }
+
+  void addNegativeTrait(String trait) {
+    final List<String> updated = List<String>.from(state.negativeTraits)
+      ..add(trait);
+    emit(state.copyWith(
+        negativeTraits: updated, isSuccess: false, errorMessage: null,),);
+  }
+
+  void removeNegativeTrait(String trait) {
+    final List<String> updated = List<String>.from(state.negativeTraits)
+      ..remove(trait);
+    emit(state.copyWith(
+        negativeTraits: updated, isSuccess: false, errorMessage: null,),);
+  }
 
   /// Build a Character object from the current state. Does not emit state.
   Character buildCharacter() {
@@ -41,15 +75,20 @@ class CharacterCreatorCubit extends Cubit<CharacterCreatorState> {
       gender: state.gender,
       age: state.age,
       description: state.description?.trim(),
+      positiveTraits: List<String>.from(state.positiveTraits),
+      negativeTraits: List<String>.from(state.negativeTraits),
     );
   }
 
   /// Validate and submit. Returns created Character on success.
   Future<Character?> submit() async {
     if (!state.isValid) {
-      emit(state.copyWith(
+      emit(
+        state.copyWith(
           errorMessage:
-              'Please fill required fields (first/last name, non-negative age).',),);
+              'Please fill required fields (first/last name, non-negative age).',
+        ),
+      );
       return null;
     }
 
@@ -62,8 +101,13 @@ class CharacterCreatorCubit extends Cubit<CharacterCreatorState> {
       emit(state.copyWith(isSubmitting: false, isSuccess: true));
       return created;
     } catch (e) {
-      emit(state.copyWith(
-          isSubmitting: false, errorMessage: e.toString(), isSuccess: false,),);
+      emit(
+        state.copyWith(
+          isSubmitting: false,
+          errorMessage: e.toString(),
+          isSuccess: false,
+        ),
+      );
       return null;
     }
   }

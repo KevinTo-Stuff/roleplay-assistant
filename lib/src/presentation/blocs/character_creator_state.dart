@@ -14,6 +14,8 @@ class CharacterCreatorState extends Equatable {
     required this.gender,
     required this.age,
     this.description,
+    this.positiveTraits = const <String>[],
+    this.negativeTraits = const <String>[],
     this.isSubmitting = false,
     this.isSuccess = false,
     this.errorMessage,
@@ -33,6 +35,8 @@ class CharacterCreatorState extends Equatable {
   final Gender gender;
   final int age;
   final String? description;
+  final List<String> positiveTraits;
+  final List<String> negativeTraits;
 
   // submission status
   final bool isSubmitting;
@@ -49,6 +53,8 @@ class CharacterCreatorState extends Equatable {
     bool? isSubmitting,
     bool? isSuccess,
     String? errorMessage,
+    List<String>? positiveTraits,
+    List<String>? negativeTraits,
   }) {
     return CharacterCreatorState(
       firstName: firstName ?? this.firstName,
@@ -57,6 +63,8 @@ class CharacterCreatorState extends Equatable {
       gender: gender ?? this.gender,
       age: age ?? this.age,
       description: description ?? this.description,
+      positiveTraits: positiveTraits ?? List<String>.from(this.positiveTraits),
+      negativeTraits: negativeTraits ?? List<String>.from(this.negativeTraits),
       isSubmitting: isSubmitting ?? this.isSubmitting,
       isSuccess: isSuccess ?? this.isSuccess,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -74,6 +82,8 @@ class CharacterCreatorState extends Equatable {
         gender,
         age,
         description,
+        positiveTraits,
+        negativeTraits,
         isSubmitting,
         isSuccess,
         errorMessage,
