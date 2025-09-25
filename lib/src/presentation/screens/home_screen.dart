@@ -7,10 +7,10 @@ import 'package:auto_route/auto_route.dart';
 // Project imports:
 import 'package:roleplay_assistant/src/core/routing/app_router.dart';
 import 'package:roleplay_assistant/src/core/theme/dimens.dart';
-import 'package:roleplay_assistant/src/presentation/screens/roleplay_screen.dart';
 import 'package:roleplay_assistant/src/shared/extensions/context_extensions.dart';
 import 'package:roleplay_assistant/src/shared/locator.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay.dart';
+import 'package:roleplay_assistant/src/shared/models/roleplay_settings.dart';
 import 'package:roleplay_assistant/src/shared/services/roleplay/roleplay_storage.dart';
 import 'package:roleplay_assistant/src/shared/widgets/buttons/button.dart';
 
@@ -25,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final RoleplayStorage _storage = locator<RoleplayStorage>();
   late Future<List<Roleplay>> _futureRoleplays;
+  bool _isRefreshing = false;
 
   @override
   void initState() {
@@ -34,12 +35,25 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _refresh() async {
     setState(() {
+      _isRefreshing = true;
       _futureRoleplays = _storage.list();
     });
+
+    try {
+      // Await the future so we can turn off the indicator after load finishes.
+      await _futureRoleplays;
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isRefreshing = false;
+        });
+      }
+    }
   }
 
   Future<void> _showCreateDialog() async {
     final TextEditingController controller = TextEditingController();
+    final TextEditingController descController = TextEditingController();
 
     final String? result = await showModalBottomSheet<String>(
       context: context,
@@ -62,11 +76,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 controller: controller,
                 autofocus: true,
                 decoration: const InputDecoration(labelText: 'Name'),
+                textInputAction: TextInputAction.next,
+                onSubmitted: (String v) {
+                  // move focus to description when pressing next
+                  // (handled automatically by the keyboard in many platforms)
+                },
+              ),
+              const SizedBox(height: Dimens.minSpacing),
+              TextField(
+                controller: descController,
+                decoration: const InputDecoration(labelText: 'Description'),
+                maxLines: 3,
                 textInputAction: TextInputAction.done,
                 onSubmitted: (String v) {
-                  final String name = v.trim();
+                  final String name = controller.text.trim();
+                  final String description = v.trim();
                   if (name.isEmpty) return;
-                  Navigator.of(ctx).pop(name);
+                  Navigator.of(ctx)
+                      .pop(<String>[name, description].join('\u0000'));
                 },
               ),
               const SizedBox(height: Dimens.spacing),
@@ -81,8 +108,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   ElevatedButton(
                     onPressed: () {
                       final String name = controller.text.trim();
+                      final String description = descController.text.trim();
                       if (name.isEmpty) return;
-                      Navigator.of(ctx).pop(name);
+                      Navigator.of(ctx)
+                          .pop(<String>[name, description].join('\u0000'));
                     },
                     child: const Text('Create'),
                   ),
@@ -94,12 +123,20 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
 
-    if (result == null || result.trim().isEmpty) return;
+    if (result == null) return;
+
+    // We passed name and description joined by a null separator above.
+    final List<String> parts = result.split('\u0000');
+    final String name = parts.isNotEmpty ? parts[0].trim() : '';
+    final String description = parts.length > 1 ? parts[1].trim() : '';
+    if (name.isEmpty) return;
 
     final Roleplay rp = Roleplay(
-      name: result.trim(),
+      name: name,
       active: true,
-      description: '',
+      description: description,
+      settings: RoleplaySettings.empty(),
+      // characters left unspecified -> defaults to empty list
     );
 
     await _storage.create(rp);
@@ -247,10 +284,17 @@ class _HomeScreenState extends State<HomeScreen> {
               style: context.textTheme.bodyMedium,
             ),
             const SizedBox(height: Dimens.spacing),
+            // Show a small refresh indicator when loading roleplays
+            if (_isRefreshing)
+              const Padding(
+                padding: EdgeInsets.only(bottom: Dimens.minSpacing),
+                child: LinearProgressIndicator(minHeight: 3.0),
+              ),
             Button.outline(
               title: 'Settings',
-              onPressed: () {
-                context.router.push(const SettingsRoute());
+              onPressed: () async {
+                await context.router.push(const SettingsRoute());
+                await _refresh();
               },
             ),
             const SizedBox(height: Dimens.spacing),
@@ -396,12 +440,15 @@ class _HomeScreenState extends State<HomeScreen> {
             Icons.more_vert,
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (BuildContext ctx) => RoleplayScreen(roleplay: r),
+          onTap: () async {
+            // Navigate to the Roleplay screen and refresh when returning
+            // so any edits performed there are reflected in the list.
+            await context.router.push(
+              RoleplayRoute(
+                roleplay: r,
               ),
             );
+            await _refresh();
           },
           onLongPress: () => _showOptionsForRoleplay(r),
         ),

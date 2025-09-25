@@ -1,5 +1,16 @@
 // Flutter imports:
+// ignore_for_file: require_trailing_commas
+
+// Flutter imports:
 import 'package:flutter/foundation.dart';
+
+// Project imports:
+import 'character.dart';
+import 'roleplay_settings.dart';
+
+// Local models:
+
+// Local models:
 
 /// Model representing a Roleplay configuration.
 ///
@@ -19,29 +30,46 @@ class Roleplay {
         active: json['active'] as bool? ?? false,
         description: json['description'] as String? ?? '',
         settings: json['settings'] != null
-            ? Map<String, dynamic>.from(
-                json['settings'] as Map<String, dynamic>,
+            ? RoleplaySettings.fromJson(
+                Map<String, dynamic>.from(
+                    json['settings'] as Map<String, dynamic>),
               )
-            : null,
+            : RoleplaySettings.empty(),
+        characters: json['characters'] is List
+            // ignore: always_specify_types
+            ? (json['characters'] as List)
+                // ignore: always_specify_types
+                .where((e) => e != null)
+                // ignore: always_specify_types
+                .map<Character>(
+                  // ignore: always_specify_types
+                  (e) => e is Character
+                      ? e
+                      : Character.fromJson(e as Map<String, dynamic>),
+                )
+                .toList()
+            : const <Character>[],
       );
+
   const Roleplay({
     this.id,
     required this.name,
     required this.active,
     required this.description,
-    this.settings,
+    required this.settings,
+    this.characters = const <Character>[],
   });
 
   /// Convenience factory that returns an empty/default Roleplay instance.
   ///
   /// Useful for initializing forms or creating placeholders.
   static Roleplay empty() {
-    return const Roleplay(
+    return Roleplay(
       id: null,
       name: '',
       active: false,
       description: '',
-      settings: null,
+      settings: RoleplaySettings.empty(),
     );
   }
 
@@ -49,14 +77,16 @@ class Roleplay {
   final bool active;
   final String description;
   final String? id;
-  final Map<String, dynamic>? settings;
+  final RoleplaySettings settings;
+  final List<Character> characters;
 
   Roleplay copyWith({
     String? id,
     String? name,
     bool? active,
     String? description,
-    Map<String, dynamic>? settings,
+    RoleplaySettings? settings,
+    List<Character>? characters,
   }) {
     return Roleplay(
       id: id ?? this.id,
@@ -64,6 +94,7 @@ class Roleplay {
       active: active ?? this.active,
       description: description ?? this.description,
       settings: settings ?? this.settings,
+      characters: characters ?? List<Character>.from(this.characters),
     );
   }
 
@@ -73,19 +104,21 @@ class Roleplay {
       'name': name,
       'active': active,
       'description': description,
-      if (settings != null) 'settings': settings,
+      'settings': settings.toJson(),
+      'characters': characters.map((Character c) => c.toJson()).toList(),
     };
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is Roleplay &&
-        other.id == id &&
+    if (other is! Roleplay) return false;
+    return other.id == id &&
         other.name == name &&
         other.active == active &&
         other.description == description &&
-        mapEquals(other.settings, settings);
+        other.settings == settings &&
+        listEquals(other.characters, characters);
   }
 
   @override
@@ -94,11 +127,12 @@ class Roleplay {
         name,
         active,
         description,
-        settings == null ? null : Object.hashAll(settings!.entries),
+        settings.hashCode,
+        Object.hashAll(characters),
       );
 
   @override
   String toString() {
-    return 'Roleplay(id: $id, name: $name, active: $active, description: $description, settings: $settings)';
+    return 'Roleplay(id: $id, name: $name, active: $active, description: $description, settings: $settings, characters: $characters)';
   }
 }

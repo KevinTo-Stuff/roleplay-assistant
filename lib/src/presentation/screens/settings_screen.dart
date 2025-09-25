@@ -96,6 +96,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ExpansionTile(
             leading: const Icon(Icons.palette),
             title: const Text('Personalisation'),
+            initiallyExpanded: true,
             children: <Widget>[
               BlocBuilder<SettingsCubit, SettingsState>(
                 builder: (BuildContext context, SettingsState state) {
@@ -138,6 +139,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ExpansionTile(
             leading: const Icon(Icons.storage),
             title: const Text('Data'),
+            initiallyExpanded: true,
             children: <Widget>[
               ListTile(
                 leading: const Icon(Icons.delete_forever),
@@ -150,6 +152,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ExpansionTile(
             leading: const Icon(Icons.info_outline),
             title: const Text('About'),
+            initiallyExpanded: true,
             children: <Widget>[
               ListTile(
                 leading: const Icon(Icons.code),

@@ -11,6 +11,73 @@
 part of 'app_router.dart';
 
 /// generated route for
+/// [CharacterScreen]
+class CharacterRoute extends PageRouteInfo<CharacterRouteArgs> {
+  CharacterRoute({
+    Key? key,
+    List<Character> characters = const [],
+    ValueChanged<List<Character>>? onChanged,
+    List<PageRouteInfo>? children,
+  }) : super(
+          CharacterRoute.name,
+          args: CharacterRouteArgs(
+            key: key,
+            characters: characters,
+            onChanged: onChanged,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'CharacterRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<CharacterRouteArgs>(
+        orElse: () => const CharacterRouteArgs(),
+      );
+      return CharacterScreen(
+        key: args.key,
+        characters: args.characters,
+        onChanged: args.onChanged,
+      );
+    },
+  );
+}
+
+class CharacterRouteArgs {
+  const CharacterRouteArgs({
+    this.key,
+    this.characters = const [],
+    this.onChanged,
+  });
+
+  final Key? key;
+
+  final List<Character> characters;
+
+  final ValueChanged<List<Character>>? onChanged;
+
+  @override
+  String toString() {
+    return 'CharacterRouteArgs{key: $key, characters: $characters, onChanged: $onChanged}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! CharacterRouteArgs) return false;
+    return key == other.key &&
+        const ListEquality().equals(characters, other.characters) &&
+        onChanged == other.onChanged;
+  }
+
+  @override
+  int get hashCode =>
+      key.hashCode ^ const ListEquality().hash(characters) ^ onChanged.hashCode;
+}
+
+/// generated route for
 /// [HomeScreen]
 class HomeRoute extends PageRouteInfo<void> {
   const HomeRoute({List<PageRouteInfo>? children})
@@ -71,6 +138,53 @@ class RoleplayRouteArgs {
 
   @override
   int get hashCode => key.hashCode ^ roleplay.hashCode;
+}
+
+/// generated route for
+/// [RoleplaySettingsScreen]
+class RoleplaySettingsRoute extends PageRouteInfo<RoleplaySettingsRouteArgs> {
+  RoleplaySettingsRoute({
+    Key? key,
+    required RoleplaySettings initial,
+    List<PageRouteInfo>? children,
+  }) : super(
+          RoleplaySettingsRoute.name,
+          args: RoleplaySettingsRouteArgs(key: key, initial: initial),
+          initialChildren: children,
+        );
+
+  static const String name = 'RoleplaySettingsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<RoleplaySettingsRouteArgs>();
+      return RoleplaySettingsScreen(key: args.key, initial: args.initial);
+    },
+  );
+}
+
+class RoleplaySettingsRouteArgs {
+  const RoleplaySettingsRouteArgs({this.key, required this.initial});
+
+  final Key? key;
+
+  final RoleplaySettings initial;
+
+  @override
+  String toString() {
+    return 'RoleplaySettingsRouteArgs{key: $key, initial: $initial}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! RoleplaySettingsRouteArgs) return false;
+    return key == other.key && initial == other.initial;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ initial.hashCode;
 }
 
 /// generated route for
