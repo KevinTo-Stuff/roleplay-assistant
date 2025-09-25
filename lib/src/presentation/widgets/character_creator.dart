@@ -11,6 +11,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:roleplay_assistant/src/presentation/blocs/character_creator_cubit.dart';
 import 'package:roleplay_assistant/src/presentation/blocs/character_creator_state.dart';
 import 'package:roleplay_assistant/src/presentation/widgets/traits_creator.dart';
+import 'package:roleplay_assistant/src/shared/widgets/headers/section_header.dart';
+import 'package:roleplay_assistant/src/shared/widgets/inputs/cubit_text_form_field.dart';
+import 'package:roleplay_assistant/src/shared/widgets/inputs/cubit_number_form_field.dart';
+import 'package:roleplay_assistant/src/shared/widgets/inputs/cubit_dropdown_form_field.dart';
 import 'package:roleplay_assistant/src/shared/models/character.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay_settings.dart';
 
@@ -108,102 +112,46 @@ class _CharacterCreatorState extends State<CharacterCreator> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             // Basic information section
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withValues(alpha: 0.06),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Row(
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.person,
-                                    size: 20,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'Basic information',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(fontWeight: FontWeight.w600),
-                                  ),
-                                ],
-                              ),
+                            // Replaced with reusable SectionHeader widget
+                            const SectionHeader(
+                              title: 'Basic information',
+                              icon: Icons.person,
                             ),
                             const SizedBox(height: 8),
 
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                BlocBuilder<CharacterCreatorCubit,
-                                    CharacterCreatorState>(
-                                  builder: (
-                                    BuildContext context,
-                                    CharacterCreatorState state,
-                                  ) {
-                                    return TextFormField(
-                                      initialValue: state.firstName,
-                                      decoration: const InputDecoration(
-                                        labelText: 'First name',
-                                      ),
-                                      validator: (String? v) =>
-                                          (v == null || v.trim().isEmpty)
-                                              ? 'Required'
-                                              : null,
-                                      onChanged: (String v) =>
-                                          _cubit.updateFirstName(v),
-                                    );
-                                  },
+                                CubitTextFormField<CharacterCreatorCubit,
+                                    CharacterCreatorState, String>(
+                                  label: 'First name',
+                                  selector: (s) => s.firstName,
+                                  validator: (String? v) =>
+                                      (v == null || v.trim().isEmpty)
+                                          ? 'Required'
+                                          : null,
+                                  onChanged: (String v) =>
+                                      _cubit.updateFirstName(v),
                                 ),
                                 const SizedBox(height: 8),
-                                BlocBuilder<CharacterCreatorCubit,
-                                    CharacterCreatorState>(
-                                  builder: (
-                                    BuildContext context,
-                                    CharacterCreatorState state,
-                                  ) {
-                                    return TextFormField(
-                                      initialValue: state.middleName,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Middle name (optional)',
-                                      ),
-                                      onChanged: (String v) =>
-                                          _cubit.updateMiddleName(
-                                              // ignore: require_trailing_commas
-                                              v.isEmpty ? null : v),
-                                    );
-                                  },
+                                CubitTextFormField<CharacterCreatorCubit,
+                                    CharacterCreatorState, String?>(
+                                  label: 'Middle name (optional)',
+                                  selector: (s) => s.middleName,
+                                  onChanged: (String v) => _cubit
+                                      .updateMiddleName(v.isEmpty ? null : v),
                                 ),
                                 const SizedBox(height: 8),
-                                BlocBuilder<CharacterCreatorCubit,
-                                    CharacterCreatorState>(
-                                  builder: (
-                                    BuildContext context,
-                                    CharacterCreatorState state,
-                                  ) {
-                                    return TextFormField(
-                                      initialValue: state.lastName,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Last name',
-                                      ),
-                                      validator: (String? v) =>
-                                          (v == null || v.trim().isEmpty)
-                                              ? 'Required'
-                                              : null,
-                                      onChanged: (String v) =>
-                                          _cubit.updateLastName(v),
-                                    );
-                                  },
+                                CubitTextFormField<CharacterCreatorCubit,
+                                    CharacterCreatorState, String>(
+                                  label: 'Last name',
+                                  selector: (s) => s.lastName,
+                                  validator: (String? v) =>
+                                      (v == null || v.trim().isEmpty)
+                                          ? 'Required'
+                                          : null,
+                                  onChanged: (String v) =>
+                                      _cubit.updateLastName(v),
                                 ),
                                 const SizedBox(height: 8),
                                 BlocBuilder<CharacterCreatorCubit,
@@ -235,33 +183,12 @@ class _CharacterCreatorState extends State<CharacterCreator> {
                                   },
                                 ),
                                 const SizedBox(height: 8),
-                                BlocBuilder<CharacterCreatorCubit,
+                                CubitNumberFormField<CharacterCreatorCubit,
                                     CharacterCreatorState>(
-                                  builder: (
-                                    BuildContext context,
-                                    CharacterCreatorState state,
-                                  ) {
-                                    return TextFormField(
-                                      initialValue: state.age.toString(),
-                                      decoration: const InputDecoration(
-                                        labelText: 'Age',
-                                      ),
-                                      keyboardType: TextInputType.number,
-                                      validator: (String? v) {
-                                        if (v == null || v.trim().isEmpty) {
-                                          return 'Required';
-                                        }
-                                        final int? parsed =
-                                            int.tryParse(v.trim());
-                                        if (parsed == null || parsed < 0) {
-                                          return 'Invalid age';
-                                        }
-                                        return null;
-                                      },
-                                      onChanged: (String v) => _cubit
-                                          .updateAge(int.tryParse(v) ?? 0),
-                                    );
-                                  },
+                                  label: 'Age',
+                                  selector: (s) => s.age,
+                                  min: 0,
+                                  onChanged: (int v) => _cubit.updateAge(v),
                                 ),
                               ],
                             ),
@@ -274,55 +201,19 @@ class _CharacterCreatorState extends State<CharacterCreator> {
                             const SizedBox(height: 8),
 
                             // Detailed information section
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .secondary
-                                    .withValues(alpha: 0.06),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Row(
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.details,
-                                    size: 20,
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'Detailed information',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(fontWeight: FontWeight.w600),
-                                  ),
-                                ],
-                              ),
+                            SectionHeader(
+                              title: 'Detailed information',
+                              icon: Icons.details,
+                              color: Theme.of(context).colorScheme.secondary,
                             ),
                             const SizedBox(height: 8),
-                            BlocBuilder<CharacterCreatorCubit,
-                                CharacterCreatorState>(
-                              builder: (
-                                BuildContext context,
-                                CharacterCreatorState state,
-                              ) {
-                                return TextFormField(
-                                  initialValue: state.description,
-                                  decoration: const InputDecoration(
-                                    labelText: 'Description (optional)',
-                                  ),
-                                  maxLines: 3,
-                                  onChanged: (String v) => _cubit
-                                      .updateDescription(v.isEmpty ? null : v),
-                                );
-                              },
+                            CubitTextFormField<CharacterCreatorCubit,
+                                CharacterCreatorState, String?>(
+                              label: 'Description (optional)',
+                              selector: (s) => s.description,
+                              maxLines: 3,
+                              onChanged: (String v) => _cubit
+                                  .updateDescription(v.isEmpty ? null : v),
                             ),
                             const SizedBox(height: 12),
                             // Traits creators
@@ -362,75 +253,23 @@ class _CharacterCreatorState extends State<CharacterCreator> {
                             const SizedBox(height: 8),
                             // Stats and resistances section (from RoleplaySettings)
                             if (widget.settings != null) ...<Widget>[
-                              Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 8,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primary
-                                      .withValues(alpha: 0.06),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Row(
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.bar_chart,
-                                      size: 20,
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      'Stats and resistances',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleMedium
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                    ),
-                                  ],
-                                ),
+                              SectionHeader(
+                                title: 'Stats and resistances',
+                                icon: Icons.bar_chart,
                               ),
                               const SizedBox(height: 8),
                               // Stats inputs
                               for (final String stat in widget.settings!.stats)
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 8.0),
-                                  child: BlocBuilder<CharacterCreatorCubit,
+                                  child: CubitNumberFormField<
+                                      CharacterCreatorCubit,
                                       CharacterCreatorState>(
-                                    builder: (
-                                      BuildContext context,
-                                      CharacterCreatorState state,
-                                    ) {
-                                      final String current =
-                                          state.stats[stat]?.toString() ?? '0';
-                                      return TextFormField(
-                                        initialValue: current,
-                                        decoration:
-                                            InputDecoration(labelText: stat),
-                                        keyboardType: TextInputType.number,
-                                        validator: (String? v) {
-                                          if (v == null || v.trim().isEmpty) {
-                                            return 'Required';
-                                          }
-                                          final int? parsed =
-                                              int.tryParse(v.trim());
-                                          if (parsed == null) {
-                                            return 'Invalid number';
-                                          }
-                                          return null;
-                                        },
-                                        onChanged: (String v) {
-                                          final int val = int.tryParse(v) ?? 0;
-                                          _cubit.updateStat(stat, val);
-                                        },
-                                      );
-                                    },
+                                    label: stat,
+                                    selector: (s) => s.stats[stat] ?? 0,
+                                    min: 0,
+                                    onChanged: (int val) =>
+                                        _cubit.updateStat(stat, val),
                                   ),
                                 ),
                               const SizedBox(height: 8),
@@ -439,38 +278,22 @@ class _CharacterCreatorState extends State<CharacterCreator> {
                                   in widget.settings!.resistences)
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 8.0),
-                                  child: BlocBuilder<CharacterCreatorCubit,
-                                      CharacterCreatorState>(
-                                    builder: (
-                                      BuildContext context,
-                                      CharacterCreatorState state,
-                                    ) {
-                                      final String current =
-                                          state.resistances[res] ??
-                                              (widget.settings!.resistanceLevels
-                                                      .isNotEmpty
-                                                  ? widget.settings!
-                                                      .resistanceLevels.first
-                                                  : '');
-                                      return DropdownButtonFormField<String>(
-                                        initialValue:
-                                            current.isNotEmpty ? current : null,
-                                        decoration:
-                                            InputDecoration(labelText: res),
-                                        items: widget.settings!.resistanceLevels
-                                            .map(
-                                              (String lvl) =>
-                                                  DropdownMenuItem<String>(
-                                                value: lvl,
-                                                child: Text(lvl),
-                                              ),
-                                            )
-                                            .toList(),
-                                        onChanged: (String? lvl) {
-                                          if (lvl == null) return;
-                                          _cubit.updateResistance(res, lvl);
-                                        },
-                                      );
+                                  child: CubitDropdownFormField<
+                                      CharacterCreatorCubit,
+                                      CharacterCreatorState,
+                                      String>(
+                                    label: res,
+                                    items: widget.settings!.resistanceLevels,
+                                    selector: (s) =>
+                                        s.resistances[res] ??
+                                        (widget.settings!.resistanceLevels
+                                                .isNotEmpty
+                                            ? widget.settings!.resistanceLevels
+                                                .first
+                                            : ''),
+                                    onChanged: (String? lvl) {
+                                      if (lvl == null) return;
+                                      _cubit.updateResistance(res, lvl);
                                     },
                                   ),
                                 ),
