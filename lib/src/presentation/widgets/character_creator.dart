@@ -125,7 +125,8 @@ class _CharacterCreatorState extends State<CharacterCreator> {
                                 CubitTextFormField<CharacterCreatorCubit,
                                     CharacterCreatorState, String>(
                                   label: 'First name',
-                                  selector: (s) => s.firstName,
+                                  selector: (CharacterCreatorState s) =>
+                                      s.firstName,
                                   validator: (String? v) =>
                                       (v == null || v.trim().isEmpty)
                                           ? 'Required'
@@ -137,7 +138,8 @@ class _CharacterCreatorState extends State<CharacterCreator> {
                                 CubitTextFormField<CharacterCreatorCubit,
                                     CharacterCreatorState, String?>(
                                   label: 'Middle name (optional)',
-                                  selector: (s) => s.middleName,
+                                  selector: (CharacterCreatorState s) =>
+                                      s.middleName,
                                   onChanged: (String v) => _cubit
                                       .updateMiddleName(v.isEmpty ? null : v),
                                 ),
@@ -145,7 +147,8 @@ class _CharacterCreatorState extends State<CharacterCreator> {
                                 CubitTextFormField<CharacterCreatorCubit,
                                     CharacterCreatorState, String>(
                                   label: 'Last name',
-                                  selector: (s) => s.lastName,
+                                  selector: (CharacterCreatorState s) =>
+                                      s.lastName,
                                   validator: (String? v) =>
                                       (v == null || v.trim().isEmpty)
                                           ? 'Required'
@@ -186,7 +189,7 @@ class _CharacterCreatorState extends State<CharacterCreator> {
                                 CubitNumberFormField<CharacterCreatorCubit,
                                     CharacterCreatorState>(
                                   label: 'Age',
-                                  selector: (s) => s.age,
+                                  selector: (CharacterCreatorState s) => s.age,
                                   min: 0,
                                   onChanged: (int v) => _cubit.updateAge(v),
                                 ),
@@ -210,7 +213,8 @@ class _CharacterCreatorState extends State<CharacterCreator> {
                             CubitTextFormField<CharacterCreatorCubit,
                                 CharacterCreatorState, String?>(
                               label: 'Description (optional)',
-                              selector: (s) => s.description,
+                              selector: (CharacterCreatorState s) =>
+                                  s.description,
                               maxLines: 3,
                               onChanged: (String v) => _cubit
                                   .updateDescription(v.isEmpty ? null : v),
@@ -253,7 +257,7 @@ class _CharacterCreatorState extends State<CharacterCreator> {
                             const SizedBox(height: 8),
                             // Stats and resistances section (from RoleplaySettings)
                             if (widget.settings != null) ...<Widget>[
-                              SectionHeader(
+                              const SectionHeader(
                                 title: 'Stats and resistances',
                                 icon: Icons.bar_chart,
                               ),
@@ -266,7 +270,8 @@ class _CharacterCreatorState extends State<CharacterCreator> {
                                       CharacterCreatorCubit,
                                       CharacterCreatorState>(
                                     label: stat,
-                                    selector: (s) => s.stats[stat] ?? 0,
+                                    selector: (CharacterCreatorState s) =>
+                                        s.stats[stat] ?? 0,
                                     min: 0,
                                     onChanged: (int val) =>
                                         _cubit.updateStat(stat, val),
@@ -284,7 +289,7 @@ class _CharacterCreatorState extends State<CharacterCreator> {
                                       String>(
                                     label: res,
                                     items: widget.settings!.resistanceLevels,
-                                    selector: (s) =>
+                                    selector: (CharacterCreatorState s) =>
                                         s.resistances[res] ??
                                         (widget.settings!.resistanceLevels
                                                 .isNotEmpty
