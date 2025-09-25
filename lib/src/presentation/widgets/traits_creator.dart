@@ -1,4 +1,6 @@
 // Flutter imports
+
+// Flutter imports:
 import 'package:flutter/material.dart';
 
 /// Widget to add/remove traits one-by-one.

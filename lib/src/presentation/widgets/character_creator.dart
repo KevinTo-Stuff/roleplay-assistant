@@ -1,14 +1,21 @@
 // Flutter imports
+
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
-// Project imports
-import 'package:roleplay_assistant/src/presentation/widgets/traits_creator.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-// Project imports
+// Project imports:
 import 'package:roleplay_assistant/src/presentation/blocs/character_creator_cubit.dart';
 import 'package:roleplay_assistant/src/presentation/blocs/character_creator_state.dart';
+import 'package:roleplay_assistant/src/presentation/widgets/traits_creator.dart';
 import 'package:roleplay_assistant/src/shared/models/character.dart';
+
+// Project imports
+
+// Project imports
 
 /// A minimal inline character creator form used by the characters screen.
 /// On successful save this widget will call `Navigator.of(context).pop(created)`

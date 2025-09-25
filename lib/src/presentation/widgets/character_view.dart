@@ -131,9 +131,9 @@ class CharacterView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: character.resistances.entries
           .map(
-            (MapEntry<String, ResistanceLevel> e) => Padding(
+            (MapEntry<String, String> e) => Padding(
               padding: const EdgeInsets.symmetric(vertical: 2.0),
-              child: Text('${e.key}: ${e.value.toShortString()}'),
+              child: Text('${e.key}: ${e.value}'),
             ),
           )
           .toList(),

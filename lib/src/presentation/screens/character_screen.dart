@@ -1,6 +1,7 @@
 // Flutter imports:
 // ignore_for_file: require_trailing_commas
 
+// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:

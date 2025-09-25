@@ -10,6 +10,7 @@ import 'package:roleplay_assistant/src/core/theme/dimens.dart';
 import 'package:roleplay_assistant/src/shared/extensions/context_extensions.dart';
 import 'package:roleplay_assistant/src/shared/locator.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay.dart';
+import 'package:roleplay_assistant/src/shared/models/roleplay_settings.dart';
 import 'package:roleplay_assistant/src/shared/services/roleplay/roleplay_storage.dart';
 import 'package:roleplay_assistant/src/shared/widgets/buttons/button.dart';
 
@@ -134,6 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
       name: name,
       active: true,
       description: description,
+      settings: RoleplaySettings.empty(),
       // characters left unspecified -> defaults to empty list
     );
 

@@ -1,11 +1,16 @@
 // Imports
+
+// Dart imports:
 import 'dart:math';
 
+// Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-// Project imports
-import 'package:roleplay_assistant/src/shared/models/character.dart';
+// Project imports:
 import 'package:roleplay_assistant/src/presentation/blocs/character_creator_state.dart';
+import 'package:roleplay_assistant/src/shared/models/character.dart';
+
+// Project imports
 
 /// Cubit to manage the `CharacterCreator` form state.
 class CharacterCreatorCubit extends Cubit<CharacterCreatorState> {

@@ -1,6 +1,9 @@
 // Flutter / package imports
+
+// Package imports:
 import 'package:equatable/equatable.dart';
 
+// Project imports:
 import 'package:roleplay_assistant/src/shared/models/character.dart';
 
 /// State for the Character Creator form.

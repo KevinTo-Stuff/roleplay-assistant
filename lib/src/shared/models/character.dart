@@ -35,47 +35,7 @@ extension GenderX on Gender {
   }
 }
 
-/// Resistance level used in the `resistances` map.
-enum ResistanceLevel { weak, neutral, resistant, immune, reflect, drain }
-
-extension ResistanceLevelX on ResistanceLevel {
-  String toShortString() {
-    switch (this) {
-      case ResistanceLevel.weak:
-        return 'weak';
-      case ResistanceLevel.neutral:
-        return 'neutral';
-      case ResistanceLevel.resistant:
-        return 'resistant';
-      case ResistanceLevel.immune:
-        return 'immune';
-      case ResistanceLevel.reflect:
-        return 'reflect';
-      case ResistanceLevel.drain:
-        return 'drain';
-    }
-  }
-
-  static ResistanceLevel fromString(String? value) {
-    if (value == null) return ResistanceLevel.neutral;
-    switch (value.toLowerCase()) {
-      case 'weak':
-        return ResistanceLevel.weak;
-      case 'neutral':
-        return ResistanceLevel.neutral;
-      case 'resistant':
-        return ResistanceLevel.resistant;
-      case 'immune':
-        return ResistanceLevel.immune;
-      case 'reflect':
-        return ResistanceLevel.reflect;
-      case 'drain':
-        return ResistanceLevel.drain;
-      default:
-        return ResistanceLevel.neutral;
-    }
-  }
-}
+// Resistance levels are stored as plain strings in `resistances`.
 
 /// Model representing a roleplay character.
 ///
@@ -87,7 +47,7 @@ extension ResistanceLevelX on ResistanceLevel {
 ///
 /// Optional fields:
 /// - `middleName`, `description`
-/// - `resistances`: `Map<String, ResistanceLevel>`
+/// - `resistances`: `Map<String, String>` (maps resistance name -> level string)
 /// - `stats`: `Map<String, int>`
 /// - `positiveTraits`, `negativeTraits`: `List<String>`
 class Character extends Equatable {
@@ -99,22 +59,22 @@ class Character extends Equatable {
     required this.age,
     this.middleName,
     this.description,
-    Map<String, ResistanceLevel>? resistances,
+    Map<String, String>? resistances,
     Map<String, int>? stats,
     List<String>? positiveTraits,
     List<String>? negativeTraits,
-  })  : resistances = resistances ?? const <String, ResistanceLevel>{},
+  })  : resistances = resistances ?? const <String, String>{},
         stats = stats ?? const <String, int>{},
         positiveTraits = positiveTraits ?? const <String>[],
         negativeTraits = negativeTraits ?? const <String>[];
 
   /// Create a Character from JSON map.
   factory Character.fromJson(Map<String, dynamic> json) {
-    final Map<String, ResistanceLevel> rawRes = <String, ResistanceLevel>{};
+    final Map<String, String> rawRes = <String, String>{};
     if (json['resistances'] is Map) {
       // ignore: always_specify_types
       (json['resistances'] as Map).forEach((k, v) {
-        if (k is String) rawRes[k] = ResistanceLevelX.fromString(v?.toString());
+        if (k is String) rawRes[k] = v?.toString() ?? '';
       });
     }
 
@@ -171,7 +131,7 @@ class Character extends Equatable {
   // Optional
   final String? middleName;
   final String? description;
-  final Map<String, ResistanceLevel> resistances;
+  final Map<String, String> resistances;
   final Map<String, int> stats;
   final List<String> positiveTraits;
   final List<String> negativeTraits;
@@ -184,7 +144,7 @@ class Character extends Equatable {
     int? age,
     String? middleName,
     String? description,
-    Map<String, ResistanceLevel>? resistances,
+    Map<String, String>? resistances,
     Map<String, int>? stats,
     List<String>? positiveTraits,
     List<String>? negativeTraits,
@@ -197,8 +157,7 @@ class Character extends Equatable {
       age: age ?? this.age,
       middleName: middleName ?? this.middleName,
       description: description ?? this.description,
-      resistances:
-          resistances ?? Map<String, ResistanceLevel>.from(this.resistances),
+      resistances: resistances ?? Map<String, String>.from(this.resistances),
       stats: stats ?? Map<String, int>.from(this.stats),
       positiveTraits: positiveTraits ?? List<String>.from(this.positiveTraits),
       negativeTraits: negativeTraits ?? List<String>.from(this.negativeTraits),
@@ -214,11 +173,7 @@ class Character extends Equatable {
         'gender': gender.toShortString(),
         'age': age,
         'description': description,
-        // ignore: always_specify_types
-        'resistances': resistances.map(
-          // ignore: always_specify_types
-          (String k, ResistanceLevel v) => MapEntry(k, v.toShortString()),
-        ),
+        'resistances': resistances,
         'stats': stats,
         'positive_traits': positiveTraits,
         'negative_traits': negativeTraits,
