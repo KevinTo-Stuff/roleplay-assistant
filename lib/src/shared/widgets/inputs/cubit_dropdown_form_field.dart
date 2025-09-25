@@ -31,14 +31,15 @@ class CubitDropdownFormField<C extends Cubit<S>, S, T> extends StatelessWidget {
       selector: selector,
       builder: (BuildContext context, T? value) {
         return DropdownButtonFormField<T>(
-          value: value,
+          initialValue: value,
           decoration: InputDecoration(labelText: label),
           items: items
-              .map((T i) => DropdownMenuItem<T>(
-                    value: i,
-                    child:
-                        Text(itemLabel != null ? itemLabel!(i) : i.toString()),
-                  ))
+              .map(
+                (T i) => DropdownMenuItem<T>(
+                  value: i,
+                  child: Text(itemLabel != null ? itemLabel!(i) : i.toString()),
+                ),
+              )
               .toList(),
           onChanged: onChanged,
         );
