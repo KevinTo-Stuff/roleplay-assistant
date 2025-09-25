@@ -17,6 +17,7 @@ class CharacterRoute extends PageRouteInfo<CharacterRouteArgs> {
     Key? key,
     List<Character> characters = const [],
     ValueChanged<List<Character>>? onChanged,
+    RoleplaySettings? settings,
     List<PageRouteInfo>? children,
   }) : super(
           CharacterRoute.name,
@@ -24,6 +25,7 @@ class CharacterRoute extends PageRouteInfo<CharacterRouteArgs> {
             key: key,
             characters: characters,
             onChanged: onChanged,
+            settings: settings,
           ),
           initialChildren: children,
         );
@@ -40,6 +42,7 @@ class CharacterRoute extends PageRouteInfo<CharacterRouteArgs> {
         key: args.key,
         characters: args.characters,
         onChanged: args.onChanged,
+        settings: args.settings,
       );
     },
   );
@@ -50,6 +53,7 @@ class CharacterRouteArgs {
     this.key,
     this.characters = const [],
     this.onChanged,
+    this.settings,
   });
 
   final Key? key;
@@ -58,9 +62,11 @@ class CharacterRouteArgs {
 
   final ValueChanged<List<Character>>? onChanged;
 
+  final RoleplaySettings? settings;
+
   @override
   String toString() {
-    return 'CharacterRouteArgs{key: $key, characters: $characters, onChanged: $onChanged}';
+    return 'CharacterRouteArgs{key: $key, characters: $characters, onChanged: $onChanged, settings: $settings}';
   }
 
   @override
@@ -69,12 +75,16 @@ class CharacterRouteArgs {
     if (other is! CharacterRouteArgs) return false;
     return key == other.key &&
         const ListEquality().equals(characters, other.characters) &&
-        onChanged == other.onChanged;
+        onChanged == other.onChanged &&
+        settings == other.settings;
   }
 
   @override
   int get hashCode =>
-      key.hashCode ^ const ListEquality().hash(characters) ^ onChanged.hashCode;
+      key.hashCode ^
+      const ListEquality().hash(characters) ^
+      onChanged.hashCode ^
+      settings.hashCode;
 }
 
 /// generated route for
@@ -199,6 +209,22 @@ class SettingsRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const SettingsScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [SkillsScreen]
+class SkillsRoute extends PageRouteInfo<void> {
+  const SkillsRoute({List<PageRouteInfo>? children})
+      : super(SkillsRoute.name, initialChildren: children);
+
+  static const String name = 'SkillsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const SkillsScreen();
     },
   );
 }

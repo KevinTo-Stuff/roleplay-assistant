@@ -11,12 +11,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:roleplay_assistant/src/presentation/blocs/character_creator_cubit.dart';
 import 'package:roleplay_assistant/src/presentation/blocs/character_creator_state.dart';
 import 'package:roleplay_assistant/src/presentation/widgets/traits_creator.dart';
-import 'package:roleplay_assistant/src/shared/widgets/headers/section_header.dart';
-import 'package:roleplay_assistant/src/shared/widgets/inputs/cubit_text_form_field.dart';
-import 'package:roleplay_assistant/src/shared/widgets/inputs/cubit_number_form_field.dart';
-import 'package:roleplay_assistant/src/shared/widgets/inputs/cubit_dropdown_form_field.dart';
 import 'package:roleplay_assistant/src/shared/models/character.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay_settings.dart';
+import 'package:roleplay_assistant/src/shared/widgets/headers/section_header.dart';
+import 'package:roleplay_assistant/src/shared/widgets/inputs/cubit_dropdown_form_field.dart';
+import 'package:roleplay_assistant/src/shared/widgets/inputs/cubit_number_form_field.dart';
+import 'package:roleplay_assistant/src/shared/widgets/inputs/cubit_text_form_field.dart';
 
 // Project imports
 

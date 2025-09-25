@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:roleplay_assistant/src/core/theme/dimens.dart';
 
 // Project imports:
+import 'package:roleplay_assistant/src/core/theme/dimens.dart';
 import '../../shared/models/roleplay_settings.dart';
 import '../blocs/roleplay_settings_cubit.dart';
 

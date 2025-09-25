@@ -1,10 +1,8 @@
 name: roleplay_assistant
-description: A Flutter+Dart based application that provides helpful tools for running a roleplay
 version: 1.0.0+1
-
 environment:
   sdk: ">=3.0.0 <4.0.0"
-
+description: A Flutter+Dart based application that provides helpful tools for running a roleplay
 dependencies:
   animations: ^2.0.11
   auto_route: ^10.1.2
@@ -23,9 +21,9 @@ dependencies:
   http: ^1.5.0
   path: ^1.9.1
   provider: ^6.1.5
+  pubspec_dependency_sorter: ^1.0.5
   shared_preferences: ^2.5.3
   url_launcher: ^6.1.10
-
 dev_dependencies:
   auto_route_generator: ^10.2.4
   build_runner: ^2.7.0
@@ -34,13 +32,10 @@ dev_dependencies:
     sdk: flutter
   import_sorter: ^4.6.0
   json_serializable: ^6.9.5
-
 flutter:
   uses-material-design: true
-
   assets:
     - assets/fonts/
-
   fonts:
     - family: GeneralSans
       fonts:
