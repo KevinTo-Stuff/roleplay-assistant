@@ -11,6 +11,7 @@ import 'package:roleplay_assistant/src/presentation/screens/character_screen.dar
 import 'package:roleplay_assistant/src/shared/locator.dart';
 import 'package:roleplay_assistant/src/shared/models/character.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay.dart';
+import 'package:roleplay_assistant/src/shared/models/roleplay_settings.dart';
 import 'package:roleplay_assistant/src/shared/services/roleplay/roleplay_storage.dart';
 import 'package:roleplay_assistant/src/shared/widgets/buttons/button.dart';
 import 'package:roleplay_assistant/src/shared/widgets/buttons/square_button.dart';
@@ -85,12 +86,22 @@ class _RoleplayScreenState extends State<RoleplayScreen> {
             const SizedBox(height: Dimens.spacing),
             Button.outline(
               title: 'Roleplay Settings',
-              onPressed: () {
-                context.router.push(
+              onPressed: () async {
+                final Object? result = await context.router.push(
                   RoleplaySettingsRoute(
                     initial: _roleplay.settings,
                   ),
                 );
+                if (result is RoleplaySettings) {
+                  final RoleplayStorage storage = locator<RoleplayStorage>();
+                  final Roleplay updated = _roleplay.copyWith(settings: result);
+                  setState(() {
+                    _roleplay = updated;
+                  });
+                  if (updated.id != null) {
+                    await storage.update(updated);
+                  }
+                }
               },
             ),
             // Active indicator moved to AppBar actions
@@ -126,6 +137,7 @@ class _RoleplayScreenState extends State<RoleplayScreen> {
                         MaterialPageRoute<void>(
                           builder: (BuildContext ctx) => CharacterScreen(
                             characters: _roleplay.characters,
+                            settings: _roleplay.settings,
                             onChanged: (List<Character> updated) async {
                               final Roleplay updatedRp = _roleplay.copyWith(
                                 characters: updated,

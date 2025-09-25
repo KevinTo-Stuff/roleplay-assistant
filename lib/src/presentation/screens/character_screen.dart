@@ -11,6 +11,7 @@ import 'package:auto_route/auto_route.dart';
 import '../../shared/models/character.dart';
 import '../widgets/character_creator.dart';
 import '../widgets/character_view.dart';
+import '../../shared/models/roleplay_settings.dart';
 
 @RoutePage()
 class CharacterScreen extends StatefulWidget {
@@ -20,10 +21,12 @@ class CharacterScreen extends StatefulWidget {
     super.key,
     this.characters = const <Character>[],
     this.onChanged,
+    this.settings,
   });
 
   final List<Character> characters;
   final ValueChanged<List<Character>>? onChanged;
+  final RoleplaySettings? settings;
 
   @override
   State<CharacterScreen> createState() => _CharacterScreenState();
@@ -48,7 +51,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
         fullscreenDialog: true,
         builder: (BuildContext ctx) => Scaffold(
           appBar: AppBar(title: const Text('New Character')),
-          body: const SafeArea(child: CharacterCreator()),
+          body: SafeArea(child: CharacterCreator(settings: widget.settings)),
         ),
       ),
     );
@@ -72,7 +75,9 @@ class _CharacterScreenState extends State<CharacterScreen> {
         fullscreenDialog: true,
         builder: (BuildContext ctx) => Scaffold(
           appBar: AppBar(title: const Text('Edit Character')),
-          body: SafeArea(child: CharacterCreator(initial: original)),
+          body: SafeArea(
+              child: CharacterCreator(
+                  initial: original, settings: widget.settings)),
         ),
       ),
     );

@@ -24,6 +24,9 @@ class CharacterCreatorCubit extends Cubit<CharacterCreatorState> {
                   gender: initialCharacter.gender,
                   age: initialCharacter.age,
                   description: initialCharacter.description,
+                  resistances:
+                      Map<String, String>.from(initialCharacter.resistances),
+                  stats: Map<String, int>.from(initialCharacter.stats),
                   positiveTraits:
                       List<String>.from(initialCharacter.positiveTraits),
                   negativeTraits:
@@ -61,6 +64,39 @@ class CharacterCreatorCubit extends Cubit<CharacterCreatorState> {
           errorMessage: null,
         ),
       );
+
+  // Resistances and stats
+  void updateResistance(String key, String level) {
+    final Map<String, String> updated =
+        Map<String, String>.from(state.resistances);
+    updated[key] = level;
+    emit(
+      state.copyWith(
+        resistances: updated,
+        isSuccess: false,
+        errorMessage: null,
+      ),
+    );
+  }
+
+  void updateStat(String key, int value) {
+    final Map<String, int> updated = Map<String, int>.from(state.stats);
+    updated[key] = value;
+    emit(state.copyWith(stats: updated, isSuccess: false, errorMessage: null));
+  }
+
+  /// Initialize stats and resistances (used when RoleplaySettings are provided)
+  void initializeStatsAndResistances(
+    Map<String, int> stats,
+    Map<String, String> resistances,
+  ) {
+    emit(
+      state.copyWith(
+        stats: Map<String, int>.from(stats),
+        resistances: Map<String, String>.from(resistances),
+      ),
+    );
+  }
 
   // Traits management
   void addPositiveTrait(String trait) {
@@ -123,6 +159,8 @@ class CharacterCreatorCubit extends Cubit<CharacterCreatorState> {
       gender: state.gender,
       age: state.age,
       description: state.description?.trim(),
+      resistances: Map<String, String>.from(state.resistances),
+      stats: Map<String, int>.from(state.stats),
       positiveTraits: List<String>.from(state.positiveTraits),
       negativeTraits: List<String>.from(state.negativeTraits),
     );

@@ -12,6 +12,7 @@ import 'package:roleplay_assistant/src/presentation/blocs/character_creator_cubi
 import 'package:roleplay_assistant/src/presentation/blocs/character_creator_state.dart';
 import 'package:roleplay_assistant/src/presentation/widgets/traits_creator.dart';
 import 'package:roleplay_assistant/src/shared/models/character.dart';
+import 'package:roleplay_assistant/src/shared/models/roleplay_settings.dart';
 
 // Project imports
 
@@ -23,9 +24,10 @@ import 'package:roleplay_assistant/src/shared/models/character.dart';
 class CharacterCreator extends StatefulWidget {
   /// When [initial] is provided the creator will prefill fields for editing
   /// and return an updated Character preserving the original id.
-  const CharacterCreator({super.key, this.initial});
+  const CharacterCreator({super.key, this.initial, this.settings});
 
   final Character? initial;
+  final RoleplaySettings? settings;
 
   @override
   State<CharacterCreator> createState() => _CharacterCreatorState();
@@ -43,6 +45,25 @@ class _CharacterCreatorState extends State<CharacterCreator> {
       originalId: widget.initial?.id,
       initialCharacter: widget.initial,
     );
+    // If settings provided, ensure any missing stats/resistances keys are present in cubit state
+    if (widget.settings != null) {
+      // set defaults for stats and resistances if initialCharacter didn't provide
+      final RoleplaySettings s = widget.settings!;
+      final Map<String, int> currentStats =
+          Map<String, int>.from(_cubit.state.stats);
+      for (final String stat in s.stats) {
+        currentStats.putIfAbsent(stat, () => 0);
+      }
+      final Map<String, String> currentRes =
+          Map<String, String>.from(_cubit.state.resistances);
+      for (final String res in s.resistences) {
+        currentRes.putIfAbsent(
+          res,
+          () => s.resistanceLevels.isNotEmpty ? s.resistanceLevels.first : '',
+        );
+      }
+      _cubit.initializeStatsAndResistances(currentStats, currentRes);
+    }
   }
 
   @override
@@ -339,6 +360,122 @@ class _CharacterCreatorState extends State<CharacterCreator> {
                               },
                             ),
                             const SizedBox(height: 8),
+                            // Stats and resistances section (from RoleplaySettings)
+                            if (widget.settings != null) ...<Widget>[
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withValues(alpha: 0.06),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Row(
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.bar_chart,
+                                      size: 20,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'Stats and resistances',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              // Stats inputs
+                              for (final String stat in widget.settings!.stats)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: BlocBuilder<CharacterCreatorCubit,
+                                      CharacterCreatorState>(
+                                    builder: (
+                                      BuildContext context,
+                                      CharacterCreatorState state,
+                                    ) {
+                                      final String current =
+                                          state.stats[stat]?.toString() ?? '0';
+                                      return TextFormField(
+                                        initialValue: current,
+                                        decoration:
+                                            InputDecoration(labelText: stat),
+                                        keyboardType: TextInputType.number,
+                                        validator: (String? v) {
+                                          if (v == null || v.trim().isEmpty) {
+                                            return 'Required';
+                                          }
+                                          final int? parsed =
+                                              int.tryParse(v.trim());
+                                          if (parsed == null) {
+                                            return 'Invalid number';
+                                          }
+                                          return null;
+                                        },
+                                        onChanged: (String v) {
+                                          final int val = int.tryParse(v) ?? 0;
+                                          _cubit.updateStat(stat, val);
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                              const SizedBox(height: 8),
+                              // Resistances dropdowns
+                              for (final String res
+                                  in widget.settings!.resistences)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: BlocBuilder<CharacterCreatorCubit,
+                                      CharacterCreatorState>(
+                                    builder: (
+                                      BuildContext context,
+                                      CharacterCreatorState state,
+                                    ) {
+                                      final String current =
+                                          state.resistances[res] ??
+                                              (widget.settings!.resistanceLevels
+                                                      .isNotEmpty
+                                                  ? widget.settings!
+                                                      .resistanceLevels.first
+                                                  : '');
+                                      return DropdownButtonFormField<String>(
+                                        initialValue:
+                                            current.isNotEmpty ? current : null,
+                                        decoration:
+                                            InputDecoration(labelText: res),
+                                        items: widget.settings!.resistanceLevels
+                                            .map(
+                                              (String lvl) =>
+                                                  DropdownMenuItem<String>(
+                                                value: lvl,
+                                                child: Text(lvl),
+                                              ),
+                                            )
+                                            .toList(),
+                                        onChanged: (String? lvl) {
+                                          if (lvl == null) return;
+                                          _cubit.updateResistance(res, lvl);
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                              const SizedBox(height: 8),
+                            ],
                           ],
                         ),
                       ),
