@@ -14,6 +14,7 @@ import 'package:roleplay_assistant/src/shared/models/roleplay_settings.dart';
 import 'package:roleplay_assistant/src/shared/services/roleplay/roleplay_storage.dart';
 import 'package:roleplay_assistant/src/shared/widgets/buttons/button.dart';
 import 'package:roleplay_assistant/src/shared/widgets/buttons/square_button.dart';
+import 'package:roleplay_assistant/src/presentation/screens/skills_screen.dart';
 
 @RoutePage()
 class RoleplayScreen extends StatefulWidget {
@@ -154,7 +155,29 @@ class _RoleplayScreenState extends State<RoleplayScreen> {
                     label: 'Characters',
                   ),
                   SquareButton.primary(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await Navigator.of(context).push<Object>(
+                        MaterialPageRoute<Object>(
+                          builder: (BuildContext ctx) => SkillsScreen(
+                            skills: _roleplay.skills,
+                            onAdd: (skill) async {
+                              final Roleplay updated = _roleplay.copyWith(
+                                skills: List.from(_roleplay.skills)..add(skill),
+                              );
+                              setState(() {
+                                _roleplay = updated;
+                              });
+                              final RoleplayStorage storage =
+                                  locator<RoleplayStorage>();
+                              if (updated.id != null) {
+                                await storage.update(updated);
+                              }
+                            },
+                          ),
+                        ),
+                      );
+                      // result handled via onAdd callback; nothing else to do here.
+                    },
                     icon: const Icon(Icons.auto_fix_high),
                     size: itemSize,
                     label: 'Skills',
