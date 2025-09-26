@@ -1,4 +1,6 @@
 // Flutter imports:
+// ignore_for_file: require_trailing_commas
+
 import 'package:equatable/equatable.dart';
 import 'package:roleplay_assistant/src/shared/models/skill.dart';
 

@@ -1,4 +1,6 @@
 // Flutter imports:
+// ignore_for_file: require_trailing_commas
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -25,7 +27,7 @@ class SkillsCreatorScreen extends StatelessWidget {
 }
 
 class _SkillsCreatorView extends StatelessWidget {
-  const _SkillsCreatorView({Key? key}) : super(key: key);
+  const _SkillsCreatorView();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,7 @@ class _SkillsCreatorView extends StatelessWidget {
                 return TextField(
                   key: const Key('skill_name'),
                   decoration: const InputDecoration(labelText: 'Name'),
-                  onChanged: (v) =>
+                  onChanged: (String v) =>
                       context.read<SkillsCreatorCubit>().nameChanged(v),
                 );
               },
@@ -53,7 +55,7 @@ class _SkillsCreatorView extends StatelessWidget {
                 return TextField(
                   key: const Key('skill_description'),
                   decoration: const InputDecoration(labelText: 'Description'),
-                  onChanged: (v) =>
+                  onChanged: (String v) =>
                       context.read<SkillsCreatorCubit>().descriptionChanged(v),
                 );
               },

@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 // avoid adding new dependency for uuid; use timestamp-based id
 
 // Project imports:
