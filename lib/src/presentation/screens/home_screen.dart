@@ -273,8 +273,13 @@ class _HomeScreenState extends State<HomeScreen> {
       skills: fixedSkills,
     );
 
+    // Capture ScaffoldMessenger before any awaits to avoid using
+    // BuildContext across async gaps. We'll still check `mounted` before
+    // showing snackbars after async work.
+    final ScaffoldMessengerState scaffold = ScaffoldMessenger.of(context);
+
     if (!changed && updated == r) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      scaffold.showSnackBar(
         const SnackBar(content: Text('No fixes needed')),
       );
       return;
@@ -293,7 +298,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     await _refresh();
 
-    ScaffoldMessenger.of(context).showSnackBar(
+    if (!mounted) return;
+    scaffold.showSnackBar(
       const SnackBar(content: Text('Roleplay fixed')),
     );
   }

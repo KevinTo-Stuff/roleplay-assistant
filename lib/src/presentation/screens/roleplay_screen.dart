@@ -11,6 +11,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:roleplay_assistant/src/core/routing/app_router.dart';
 import 'package:roleplay_assistant/src/core/theme/dimens.dart';
 import 'package:roleplay_assistant/src/presentation/screens/skills_screen.dart';
+import 'package:roleplay_assistant/src/presentation/screens/items_screen.dart';
 import 'package:roleplay_assistant/src/shared/locator.dart';
 import 'package:roleplay_assistant/src/shared/models/character.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay.dart';
@@ -225,7 +226,22 @@ class _RoleplayScreenState extends State<RoleplayScreen> {
                   ),
                   SquareButton.primary(
                     onPressed: () async {
-                      await context.router.push(const ToolsRoute());
+                      final Object? result = await Navigator.of(context).push(
+                        MaterialPageRoute<Object>(
+                          builder: (BuildContext ctx) => ItemsScreen(
+                            roleplay: _roleplay,
+                          ),
+                        ),
+                      );
+                      if (result is Roleplay) {
+                        final Roleplay updated = result;
+                        setState(() {
+                          _roleplay = updated;
+                        });
+                        final RoleplayStorage storage =
+                            locator<RoleplayStorage>();
+                        if (updated.id != null) await storage.update(updated);
+                      }
                     },
                     icon: const Icon(Icons.inventory_2),
                     size: itemSize,
@@ -240,7 +256,9 @@ class _RoleplayScreenState extends State<RoleplayScreen> {
                     label: 'Tools',
                   ),
                   SquareButton.primary(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await context.router.push(const MapsRoute());
+                    },
                     icon: const Icon(Icons.map),
                     size: itemSize,
                     label: 'Maps',

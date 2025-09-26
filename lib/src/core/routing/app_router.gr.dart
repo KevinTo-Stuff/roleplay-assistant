@@ -104,6 +104,38 @@ class HomeRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [ItemsScreen]
+class ItemsRoute extends PageRouteInfo<void> {
+  const ItemsRoute({List<PageRouteInfo>? children})
+      : super(ItemsRoute.name, initialChildren: children);
+
+  static const String name = 'ItemsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ItemsScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [MapsScreen]
+class MapsRoute extends PageRouteInfo<void> {
+  const MapsRoute({List<PageRouteInfo>? children})
+      : super(MapsRoute.name, initialChildren: children);
+
+  static const String name = 'MapsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const MapsScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [RoleplayScreen]
 class RoleplayRoute extends PageRouteInfo<RoleplayRouteArgs> {
   RoleplayRoute({

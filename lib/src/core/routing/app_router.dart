@@ -8,6 +8,8 @@ import 'package:collection/collection.dart';
 // Project imports:
 import 'package:roleplay_assistant/src/presentation/screens/character_screen.dart';
 import 'package:roleplay_assistant/src/presentation/screens/home_screen.dart';
+import 'package:roleplay_assistant/src/presentation/screens/items_screen.dart';
+import 'package:roleplay_assistant/src/presentation/screens/maps_screen.dart';
 import 'package:roleplay_assistant/src/presentation/screens/roleplay_screen.dart';
 import 'package:roleplay_assistant/src/presentation/screens/roleplay_settings_screen.dart';
 import 'package:roleplay_assistant/src/presentation/screens/settings_screen.dart';
@@ -30,6 +32,8 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: CharacterRoute.page),
     AutoRoute(page: RoleplaySettingsRoute.page),
     AutoRoute(page: ToolsRoute.page),
+    AutoRoute(page: MapsRoute.page),
+    AutoRoute(page: ItemsRoute.page),
     AutoRoute(page: SkillsRoute.page),
   ];
 }

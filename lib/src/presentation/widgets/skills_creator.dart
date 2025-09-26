@@ -153,7 +153,9 @@ class _SkillsCreatorView extends StatelessWidget {
                         onPressed: state.isSaving
                             ? null
                             : () {
-                                Navigator.of(context).pop();
+                                // Use the builder context (ctx) here which is
+                                // local to the BlocBuilder and synchronous.
+                                Navigator.of(ctx).pop();
                               },
                         child: const Text('Cancel'),
                       ),
@@ -164,11 +166,18 @@ class _SkillsCreatorView extends StatelessWidget {
                         onPressed: !state.isValid || state.isSaving
                             ? null
                             : () async {
-                                final String id = await context
-                                    .read<SkillsCreatorCubit>()
-                                    .save(existingId: initial?.id);
-                                final Skill skill = state.toSkill(id);
-                                Navigator.of(context).pop(skill);
+                                // Capture cubit, current state and navigator
+                                // from the builder's ctx synchronously so we do
+                                // not use BuildContext after an await.
+                                final SkillsCreatorCubit cubit =
+                                    ctx.read<SkillsCreatorCubit>();
+                                final SkillsCreatorState currentState = state;
+                                final NavigatorState nav = Navigator.of(ctx);
+
+                                final String id =
+                                    await cubit.save(existingId: initial?.id);
+                                final Skill skill = currentState.toSkill(id);
+                                nav.pop(skill);
                               },
                         child: state.isSaving
                             ? const SizedBox(

@@ -4,10 +4,14 @@
 // Flutter imports:
 import 'package:flutter/foundation.dart';
 
+// Dart imports:
+import 'dart:math';
+
 // Project imports:
 import 'character.dart';
 import 'roleplay_settings.dart';
 import 'skill.dart';
+import 'item.dart';
 
 // Local models:
 
@@ -50,6 +54,19 @@ class Roleplay {
                 )
                 .toList()
             : const <Character>[],
+        items: json['items'] is List
+            // ignore: always_specify_types
+            ? (json['items'] as List)
+                // ignore: always_specify_types
+                .where((e) => e != null)
+                // ignore: always_specify_types
+                .map<Item>(
+                  // ignore: always_specify_types
+                  (e) =>
+                      e is Item ? e : Item.fromJson(e as Map<String, dynamic>),
+                )
+                .toList()
+            : const <Item>[],
         skills: json['skills'] is List
             // ignore: always_specify_types
             ? (json['skills'] as List)
@@ -74,6 +91,7 @@ class Roleplay {
     required this.settings,
     this.characters = const <Character>[],
     this.skills = const <Skill>[],
+    this.items = const <Item>[],
   });
 
   /// Convenience factory that returns an empty/default Roleplay instance.
@@ -222,6 +240,20 @@ class Roleplay {
           flavor: 'A warm, mending light.',
         ),
       ],
+      items: <Item>[
+        // generate a small random selection of example items
+        for (final int i in List<int>.generate(Random().nextInt(5) + 2, (int idx) => idx))
+          Item(
+            id: 'example_item_$i',
+            name: 'Item ${i + 1}',
+            type: ItemType.values[i % ItemType.values.length],
+            description: 'An example item for demo purposes.',
+            cost: 10 + i * 5,
+            sell: 5 + i * 2,
+            rarity: Rarity.values[i % Rarity.values.length],
+            soulbound: i % 4 == 0 ? true : false,
+          ),
+      ],
     );
   }
 
@@ -232,6 +264,7 @@ class Roleplay {
   final RoleplaySettings settings;
   final List<Character> characters;
   final List<Skill> skills;
+  final List<Item> items;
 
   Roleplay copyWith({
     String? id,
@@ -241,6 +274,7 @@ class Roleplay {
     RoleplaySettings? settings,
     List<Character>? characters,
     List<Skill>? skills,
+    List<Item>? items,
   }) {
     return Roleplay(
       id: id ?? this.id,
@@ -250,6 +284,7 @@ class Roleplay {
       settings: settings ?? this.settings,
       characters: characters ?? List<Character>.from(this.characters),
       skills: skills ?? List<Skill>.from(this.skills),
+      items: items ?? List<Item>.from(this.items),
     );
   }
 
@@ -260,6 +295,7 @@ class Roleplay {
       'active': active,
       'description': description,
       'settings': settings.toJson(),
+      'items': items.map((Item i) => i.toJson()).toList(),
       'characters': characters.map((Character c) => c.toJson()).toList(),
       'skills': skills.map((Skill s) => s.toJson()).toList(),
     };
@@ -275,7 +311,8 @@ class Roleplay {
         other.description == description &&
         other.settings == settings &&
         listEquals(other.characters, characters) &&
-        listEquals(other.skills, skills);
+        listEquals(other.skills, skills) &&
+        listEquals(other.items, items);
   }
 
   @override
@@ -287,10 +324,11 @@ class Roleplay {
         settings.hashCode,
         Object.hashAll(characters),
         Object.hashAll(skills),
+        Object.hashAll(items),
       );
 
   @override
   String toString() {
-    return 'Roleplay(id: $id, name: $name, active: $active, description: $description, settings: $settings, characters: $characters, skills: $skills)';
+    return 'Roleplay(id: $id, name: $name, active: $active, description: $description, settings: $settings, characters: $characters, skills: $skills, items: $items)';
   }
 }
