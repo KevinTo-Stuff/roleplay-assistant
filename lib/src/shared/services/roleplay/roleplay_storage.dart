@@ -1,9 +1,12 @@
 // Dart imports:
+// ignore_for_file: require_trailing_commas
+
 import 'dart:convert';
 import 'dart:math';
 
 // Project imports:
 import 'package:roleplay_assistant/src/shared/models/roleplay.dart';
+import 'package:roleplay_assistant/src/shared/services/storage/keys.dart';
 import 'package:roleplay_assistant/src/shared/services/storage/storage.dart';
 
 /// Simple persistent storage helper for `Roleplay` objects.
@@ -15,7 +18,7 @@ class RoleplayStorage {
 
   final Storage storage;
 
-  static const String _kKey = 'roleplays';
+  static const String _kKey = kRoleplaysStorageKey;
   final Random _random = Random.secure();
 
   String _generateId() {
@@ -29,7 +32,8 @@ class RoleplayStorage {
     if (list == null) return <Roleplay>[];
     try {
       return list
-          .map((String e) => Roleplay.fromJson(jsonDecode(e) as Map<String, dynamic>))
+          .map((String e) =>
+              Roleplay.fromJson(jsonDecode(e) as Map<String, dynamic>))
           .toList();
     } catch (_) {
       return <Roleplay>[];

@@ -9,9 +9,9 @@ import 'package:auto_route/auto_route.dart';
 
 // Project imports:
 import '../../shared/models/character.dart';
+import '../../shared/models/roleplay_settings.dart';
 import '../widgets/character_creator.dart';
 import '../widgets/character_view.dart';
-import '../../shared/models/roleplay_settings.dart';
 
 @RoutePage()
 class CharacterScreen extends StatefulWidget {

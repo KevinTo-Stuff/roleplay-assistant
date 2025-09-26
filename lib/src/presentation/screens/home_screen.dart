@@ -9,8 +9,10 @@ import 'package:roleplay_assistant/src/core/routing/app_router.dart';
 import 'package:roleplay_assistant/src/core/theme/dimens.dart';
 import 'package:roleplay_assistant/src/shared/extensions/context_extensions.dart';
 import 'package:roleplay_assistant/src/shared/locator.dart';
+import 'package:roleplay_assistant/src/shared/models/character.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay_settings.dart';
+import 'package:roleplay_assistant/src/shared/models/skill.dart';
 import 'package:roleplay_assistant/src/shared/services/roleplay/roleplay_storage.dart';
 import 'package:roleplay_assistant/src/shared/widgets/buttons/button.dart';
 
@@ -157,6 +159,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 onTap: () => Navigator.of(ctx).pop('edit'),
               ),
               ListTile(
+                leading: const Icon(Icons.build),
+                title: const Text('Fix'),
+                onTap: () => Navigator.of(ctx).pop('fix'),
+              ),
+              ListTile(
                 leading: const Icon(Icons.delete_outline),
                 title: const Text('Delete'),
                 onTap: () => Navigator.of(ctx).pop('delete'),
@@ -172,7 +179,123 @@ class _HomeScreenState extends State<HomeScreen> {
       await _showEditDialog(r);
     } else if (action == 'delete') {
       await _confirmDelete(r);
+    } else if (action == 'fix') {
+      await _fixRoleplay(r);
     }
+  }
+
+  Future<void> _fixRoleplay(Roleplay r) async {
+    // Normalize and initialize any missing/null fields on the roleplay and its
+    // nested objects, then persist changes to storage.
+    bool changed = false;
+
+    // Ensure settings exists and lists are non-null (models are non-nullable)
+    final RoleplaySettings settings = r.settings;
+    final RoleplaySettings fixedSettings = RoleplaySettings(
+      resistences: List<String>.from(settings.resistences),
+      resistanceLevels: List<String>.from(settings.resistanceLevels),
+      stats: List<String>.from(settings.stats),
+    );
+    if (fixedSettings != r.settings) changed = true;
+
+    // Fix characters
+    final List<Character> fixedChars = <Character>[];
+    for (int i = 0; i < r.characters.length; i++) {
+      final Character c = r.characters[i];
+      final String id = (c.id.isEmpty)
+          ? 'char_${DateTime.now().microsecondsSinceEpoch}_$i'
+          : c.id;
+      final String firstName = (c.firstName).trim();
+      final String lastName = (c.lastName).trim();
+      final Gender gender = c.gender;
+      final int age = c.age >= 0 ? c.age : 0;
+      final String? middleName = c.middleName;
+      final String? description = c.description;
+      final Map<String, String> resistances =
+          Map<String, String>.from(c.resistances);
+      final Map<String, int> stats = Map<String, int>.from(c.stats);
+      final List<String> posTraits = List<String>.from(c.positiveTraits);
+      final List<String> negTraits = List<String>.from(c.negativeTraits);
+
+      final Character fixed = c.copyWith(
+        id: id,
+        firstName: firstName.isEmpty ? '' : firstName,
+        lastName: lastName.isEmpty ? '' : lastName,
+        gender: gender,
+        age: age,
+        middleName: middleName,
+        description: description,
+        resistances: Map<String, String>.from(resistances),
+        stats: Map<String, int>.from(stats),
+        positiveTraits: List<String>.from(posTraits),
+        negativeTraits: List<String>.from(negTraits),
+      );
+
+      if (fixed != c) changed = true;
+      fixedChars.add(fixed);
+    }
+
+    // Fix skills
+    final List<Skill> fixedSkills = <Skill>[];
+    for (int i = 0; i < r.skills.length; i++) {
+      final Skill s = r.skills[i];
+      final String id = (s.id.isEmpty)
+          ? 'skill_${DateTime.now().microsecondsSinceEpoch}_$i'
+          : s.id;
+      final String name = (s.name).trim();
+
+      final Skill fixed = s.copyWith(
+        id: id,
+        name: name.isEmpty ? '' : name,
+        costType: s.costType,
+        cost: s.cost,
+        type: s.type,
+        damageType: s.damageType,
+        description: s.description,
+        flavor: s.flavor,
+      );
+
+      if (fixed != s) changed = true;
+      fixedSkills.add(fixed);
+    }
+
+    // Ensure top-level fields
+    final String name = r.name.trim();
+    final String description = r.description.trim();
+    final bool active = r.active;
+
+    final Roleplay updated = r.copyWith(
+      name: name,
+      description: description,
+      active: active,
+      settings: fixedSettings,
+      characters: fixedChars,
+      skills: fixedSkills,
+    );
+
+    if (!changed && updated == r) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No fixes needed')),
+      );
+      return;
+    }
+
+    // Persist changes: if roleplay has an id try update, otherwise create.
+    if (r.id == null) {
+      await _storage.create(updated);
+    } else {
+      final Roleplay? res = await _storage.update(updated);
+      if (res == null) {
+        // If update failed (not found), create as fallback
+        await _storage.create(updated);
+      }
+    }
+
+    await _refresh();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Roleplay fixed')),
+    );
   }
 
   Future<void> _showEditDialog(Roleplay r) async {

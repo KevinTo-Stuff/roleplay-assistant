@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 // Project imports:
 import 'character.dart';
 import 'roleplay_settings.dart';
+import 'skill.dart';
 
 // Local models:
 
@@ -49,6 +50,20 @@ class Roleplay {
                 )
                 .toList()
             : const <Character>[],
+        skills: json['skills'] is List
+            // ignore: always_specify_types
+            ? (json['skills'] as List)
+                // ignore: always_specify_types
+                .where((e) => e != null)
+                // ignore: always_specify_types
+                .map<Skill>(
+                  // ignore: always_specify_types
+                  (e) => e is Skill
+                      ? e
+                      : Skill.fromJson(e as Map<String, dynamic>),
+                )
+                .toList()
+            : const <Skill>[],
       );
 
   const Roleplay({
@@ -58,6 +73,7 @@ class Roleplay {
     required this.description,
     required this.settings,
     this.characters = const <Character>[],
+    this.skills = const <Skill>[],
   });
 
   /// Convenience factory that returns an empty/default Roleplay instance.
@@ -79,6 +95,7 @@ class Roleplay {
   final String? id;
   final RoleplaySettings settings;
   final List<Character> characters;
+  final List<Skill> skills;
 
   Roleplay copyWith({
     String? id,
@@ -87,6 +104,7 @@ class Roleplay {
     String? description,
     RoleplaySettings? settings,
     List<Character>? characters,
+    List<Skill>? skills,
   }) {
     return Roleplay(
       id: id ?? this.id,
@@ -95,6 +113,7 @@ class Roleplay {
       description: description ?? this.description,
       settings: settings ?? this.settings,
       characters: characters ?? List<Character>.from(this.characters),
+      skills: skills ?? List<Skill>.from(this.skills),
     );
   }
 
@@ -106,6 +125,7 @@ class Roleplay {
       'description': description,
       'settings': settings.toJson(),
       'characters': characters.map((Character c) => c.toJson()).toList(),
+      'skills': skills.map((Skill s) => s.toJson()).toList(),
     };
   }
 
@@ -118,7 +138,8 @@ class Roleplay {
         other.active == active &&
         other.description == description &&
         other.settings == settings &&
-        listEquals(other.characters, characters);
+        listEquals(other.characters, characters) &&
+        listEquals(other.skills, skills);
   }
 
   @override
@@ -129,10 +150,11 @@ class Roleplay {
         description,
         settings.hashCode,
         Object.hashAll(characters),
+        Object.hashAll(skills),
       );
 
   @override
   String toString() {
-    return 'Roleplay(id: $id, name: $name, active: $active, description: $description, settings: $settings, characters: $characters)';
+    return 'Roleplay(id: $id, name: $name, active: $active, description: $description, settings: $settings, characters: $characters, skills: $skills)';
   }
 }
