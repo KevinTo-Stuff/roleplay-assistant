@@ -12,6 +12,7 @@ import 'package:roleplay_assistant/src/presentation/screens/roleplay_screen.dart
 import 'package:roleplay_assistant/src/presentation/screens/roleplay_settings_screen.dart';
 import 'package:roleplay_assistant/src/presentation/screens/settings_screen.dart';
 import 'package:roleplay_assistant/src/presentation/screens/skills_screen.dart';
+import 'package:roleplay_assistant/src/presentation/screens/tools_screen.dart';
 import 'package:roleplay_assistant/src/shared/models/character.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay_settings.dart';
@@ -28,6 +29,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: SettingsRoute.page),
     AutoRoute(page: CharacterRoute.page),
     AutoRoute(page: RoleplaySettingsRoute.page),
+    AutoRoute(page: ToolsRoute.page),
     AutoRoute(page: SkillsRoute.page),
   ];
 }

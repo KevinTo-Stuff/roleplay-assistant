@@ -1,0 +1,5 @@
+{
+  "problems.exclude": {
+    "**/.instructions.md": true
+  }
+}

@@ -224,13 +224,17 @@ class _RoleplayScreenState extends State<RoleplayScreen> {
                     label: 'Compendium',
                   ),
                   SquareButton.primary(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await context.router.push(const ToolsRoute());
+                    },
                     icon: const Icon(Icons.inventory_2),
                     size: itemSize,
                     label: 'Items',
                   ),
                   SquareButton.primary(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await context.router.push(const ToolsRoute());
+                    },
                     icon: const Icon(Icons.build),
                     size: itemSize,
                     label: 'Tools',

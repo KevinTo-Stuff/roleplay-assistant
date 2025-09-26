@@ -289,3 +289,19 @@ class SkillsRouteArgs {
   @override
   int get hashCode => key.hashCode ^ const ListEquality().hash(skills);
 }
+
+/// generated route for
+/// [ToolsScreen]
+class ToolsRoute extends PageRouteInfo<void> {
+  const ToolsRoute({List<PageRouteInfo>? children})
+      : super(ToolsRoute.name, initialChildren: children);
+
+  static const String name = 'ToolsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ToolsScreen();
+    },
+  );
+}

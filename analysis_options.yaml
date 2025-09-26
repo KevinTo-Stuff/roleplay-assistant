@@ -12,6 +12,7 @@ analyzer:
     - "**/*.g.dart"
     - "**/*.freezed.dart"
     - "**/*.gen.dart"
+    - .instructions.md
 
 linter:
   rules:
