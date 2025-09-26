@@ -9,10 +9,10 @@ import 'package:roleplay_assistant/src/core/routing/app_router.dart';
 import 'package:roleplay_assistant/src/core/theme/dimens.dart';
 import 'package:roleplay_assistant/src/shared/extensions/context_extensions.dart';
 import 'package:roleplay_assistant/src/shared/locator.dart';
-import 'package:roleplay_assistant/src/shared/models/roleplay.dart';
 import 'package:roleplay_assistant/src/shared/models/character.dart';
-import 'package:roleplay_assistant/src/shared/models/skill.dart';
+import 'package:roleplay_assistant/src/shared/models/roleplay.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay_settings.dart';
+import 'package:roleplay_assistant/src/shared/models/skill.dart';
 import 'package:roleplay_assistant/src/shared/services/roleplay/roleplay_storage.dart';
 import 'package:roleplay_assistant/src/shared/widgets/buttons/button.dart';
 

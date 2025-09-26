@@ -1,6 +1,7 @@
 // Flutter imports:
 // ignore_for_file: always_specify_types
 
+// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -9,6 +10,7 @@ import 'package:auto_route/auto_route.dart';
 // Project imports:
 import 'package:roleplay_assistant/src/core/routing/app_router.dart';
 import 'package:roleplay_assistant/src/core/theme/dimens.dart';
+import 'package:roleplay_assistant/src/presentation/screens/skills_screen.dart';
 import 'package:roleplay_assistant/src/shared/locator.dart';
 import 'package:roleplay_assistant/src/shared/models/character.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay.dart';
@@ -17,7 +19,6 @@ import 'package:roleplay_assistant/src/shared/models/skill.dart';
 import 'package:roleplay_assistant/src/shared/services/roleplay/roleplay_storage.dart';
 import 'package:roleplay_assistant/src/shared/widgets/buttons/button.dart';
 import 'package:roleplay_assistant/src/shared/widgets/buttons/square_button.dart';
-import 'package:roleplay_assistant/src/presentation/screens/skills_screen.dart';
 
 @RoutePage()
 class RoleplayScreen extends StatefulWidget {

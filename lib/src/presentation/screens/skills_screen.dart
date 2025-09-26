@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:auto_route/annotations.dart';
 
 // Project imports:
-import 'package:roleplay_assistant/src/shared/models/skill.dart';
 import 'package:roleplay_assistant/src/presentation/widgets/skills_creator.dart';
+import 'package:roleplay_assistant/src/shared/models/skill.dart';
 
 @RoutePage()
 class SkillsScreen extends StatefulWidget {

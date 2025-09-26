@@ -1,10 +1,12 @@
-// Flutter imports:
+// Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
-// avoid adding new dependency for uuid; use timestamp-based id
 
 // Project imports:
-import 'skills_creator_state.dart';
 import 'package:roleplay_assistant/src/shared/models/skill.dart';
+import 'skills_creator_state.dart';
+
+// avoid adding new dependency for uuid; use timestamp-based id
+
 
 class SkillsCreatorCubit extends Cubit<SkillsCreatorState> {
   /// Provide an optional [initial] Skill to prefill the creator for editing.
@@ -14,6 +16,11 @@ class SkillsCreatorCubit extends Cubit<SkillsCreatorState> {
               ? SkillsCreatorState(
                   name: initial.name,
                   description: initial.description ?? '',
+                  costType: initial.costType,
+                  cost: initial.cost,
+                  type: initial.type,
+                  damageType: initial.damageType,
+                  flavor: initial.flavor,
                   isValid: initial.name.trim().isNotEmpty,
                 )
               : const SkillsCreatorState(),
@@ -25,6 +32,28 @@ class SkillsCreatorCubit extends Cubit<SkillsCreatorState> {
 
   void descriptionChanged(String value) {
     emit(state.copyWith(description: value));
+  }
+
+  void costTypeChanged(String? value) {
+    emit(state.copyWith(costType: value));
+  }
+
+  void costChanged(String? value) {
+    final int? parsed =
+        (value == null || value.trim().isEmpty) ? null : int.tryParse(value);
+    emit(state.copyWith(cost: parsed));
+  }
+
+  void typeChanged(String? value) {
+    emit(state.copyWith(type: value));
+  }
+
+  void damageTypeChanged(String? value) {
+    emit(state.copyWith(damageType: value));
+  }
+
+  void flavorChanged(String? value) {
+    emit(state.copyWith(flavor: value));
   }
 
   bool _validate(String name) => name.trim().isNotEmpty;

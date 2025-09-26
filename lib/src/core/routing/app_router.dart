@@ -15,6 +15,7 @@ import 'package:roleplay_assistant/src/presentation/screens/skills_screen.dart';
 import 'package:roleplay_assistant/src/shared/models/character.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay_settings.dart';
+import 'package:roleplay_assistant/src/shared/models/skill.dart';
 
 part 'app_router.gr.dart';
 

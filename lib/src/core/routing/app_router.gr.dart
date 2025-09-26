@@ -215,16 +215,77 @@ class SettingsRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [SkillsScreen]
-class SkillsRoute extends PageRouteInfo<void> {
-  const SkillsRoute({List<PageRouteInfo>? children})
-      : super(SkillsRoute.name, initialChildren: children);
+class SkillsRoute extends PageRouteInfo<SkillsRouteArgs> {
+  SkillsRoute({
+    Key? key,
+    List<Skill> skills = const [],
+    void Function(Skill)? onAdd,
+    void Function(Skill)? onUpdate,
+    void Function(String)? onDelete,
+    List<PageRouteInfo>? children,
+  }) : super(
+          SkillsRoute.name,
+          args: SkillsRouteArgs(
+            key: key,
+            skills: skills,
+            onAdd: onAdd,
+            onUpdate: onUpdate,
+            onDelete: onDelete,
+          ),
+          initialChildren: children,
+        );
 
   static const String name = 'SkillsRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const SkillsScreen();
+      final args = data.argsAs<SkillsRouteArgs>(
+        orElse: () => const SkillsRouteArgs(),
+      );
+      return SkillsScreen(
+        key: args.key,
+        skills: args.skills,
+        onAdd: args.onAdd,
+        onUpdate: args.onUpdate,
+        onDelete: args.onDelete,
+      );
     },
   );
+}
+
+class SkillsRouteArgs {
+  const SkillsRouteArgs({
+    this.key,
+    this.skills = const [],
+    this.onAdd,
+    this.onUpdate,
+    this.onDelete,
+  });
+
+  final Key? key;
+
+  final List<Skill> skills;
+
+  final void Function(Skill)? onAdd;
+
+  final void Function(Skill)? onUpdate;
+
+  final void Function(String)? onDelete;
+
+  @override
+  String toString() {
+    return 'SkillsRouteArgs{key: $key, skills: $skills, onAdd: $onAdd, onUpdate: $onUpdate, onDelete: $onDelete}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! SkillsRouteArgs) return false;
+    return key == other.key &&
+        const ListEquality().equals(skills, other.skills);
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ const ListEquality().hash(skills);
 }

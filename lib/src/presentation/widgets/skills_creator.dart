@@ -1,7 +1,10 @@
 // Flutter imports:
 // ignore_for_file: require_trailing_commas
 
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -13,8 +16,8 @@ import 'package:roleplay_assistant/src/shared/models/skill.dart';
 /// present it as a dialog-like route. When saved this screen will `Navigator.pop`
 /// with the created [Skill].
 class SkillsCreatorScreen extends StatelessWidget {
-
   const SkillsCreatorScreen.fullscreen({super.key, this.initial});
+
   /// Optional Skill to edit. If provided, the creator will be prefilled and
   /// saving will preserve the existing id.
   final Skill? initial;
@@ -65,6 +68,78 @@ class _SkillsCreatorView extends StatelessWidget {
                       TextEditingValue(text: state.description)),
                   onChanged: (String v) =>
                       context.read<SkillsCreatorCubit>().descriptionChanged(v),
+                );
+              },
+            ),
+            const SizedBox(height: 12),
+            BlocBuilder<SkillsCreatorCubit, SkillsCreatorState>(
+              builder: (BuildContext ctx, SkillsCreatorState state) {
+                return TextField(
+                  key: const Key('skill_cost_type'),
+                  decoration: const InputDecoration(labelText: 'Cost type'),
+                  controller: TextEditingController.fromValue(
+                      TextEditingValue(text: state.costType ?? '')),
+                  onChanged: (String v) => context
+                      .read<SkillsCreatorCubit>()
+                      .costTypeChanged(v.isEmpty ? null : v),
+                );
+              },
+            ),
+            const SizedBox(height: 12),
+            BlocBuilder<SkillsCreatorCubit, SkillsCreatorState>(
+              builder: (BuildContext ctx, SkillsCreatorState state) {
+                return TextField(
+                  key: const Key('skill_cost'),
+                  decoration:
+                      const InputDecoration(labelText: 'Cost (integer)'),
+                  keyboardType: TextInputType.number,
+                  controller: TextEditingController.fromValue(
+                      TextEditingValue(text: state.cost?.toString() ?? '')),
+                  onChanged: (String v) => context
+                      .read<SkillsCreatorCubit>()
+                      .costChanged(v.isEmpty ? null : v),
+                );
+              },
+            ),
+            const SizedBox(height: 12),
+            BlocBuilder<SkillsCreatorCubit, SkillsCreatorState>(
+              builder: (BuildContext ctx, SkillsCreatorState state) {
+                return TextField(
+                  key: const Key('skill_type'),
+                  decoration: const InputDecoration(labelText: 'Type'),
+                  controller: TextEditingController.fromValue(
+                      TextEditingValue(text: state.type ?? '')),
+                  onChanged: (String v) => context
+                      .read<SkillsCreatorCubit>()
+                      .typeChanged(v.isEmpty ? null : v),
+                );
+              },
+            ),
+            const SizedBox(height: 12),
+            BlocBuilder<SkillsCreatorCubit, SkillsCreatorState>(
+              builder: (BuildContext ctx, SkillsCreatorState state) {
+                return TextField(
+                  key: const Key('skill_damage_type'),
+                  decoration: const InputDecoration(labelText: 'Damage type'),
+                  controller: TextEditingController.fromValue(
+                      TextEditingValue(text: state.damageType ?? '')),
+                  onChanged: (String v) => context
+                      .read<SkillsCreatorCubit>()
+                      .damageTypeChanged(v.isEmpty ? null : v),
+                );
+              },
+            ),
+            const SizedBox(height: 12),
+            BlocBuilder<SkillsCreatorCubit, SkillsCreatorState>(
+              builder: (BuildContext ctx, SkillsCreatorState state) {
+                return TextField(
+                  key: const Key('skill_flavor'),
+                  decoration: const InputDecoration(labelText: 'Flavor'),
+                  controller: TextEditingController.fromValue(
+                      TextEditingValue(text: state.flavor ?? '')),
+                  onChanged: (String v) => context
+                      .read<SkillsCreatorCubit>()
+                      .flavorChanged(v.isEmpty ? null : v),
                 );
               },
             ),
