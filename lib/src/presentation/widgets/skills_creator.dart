@@ -13,21 +13,25 @@ import 'package:roleplay_assistant/src/shared/models/skill.dart';
 /// present it as a dialog-like route. When saved this screen will `Navigator.pop`
 /// with the created [Skill].
 class SkillsCreatorScreen extends StatelessWidget {
-  const SkillsCreatorScreen._({super.key});
 
-  const SkillsCreatorScreen.fullscreen({Key? key}) : this._(key: key);
+  const SkillsCreatorScreen.fullscreen({super.key, this.initial});
+  /// Optional Skill to edit. If provided, the creator will be prefilled and
+  /// saving will preserve the existing id.
+  final Skill? initial;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<SkillsCreatorCubit>(
-      create: (_) => SkillsCreatorCubit(),
-      child: const _SkillsCreatorView(),
+      create: (_) => SkillsCreatorCubit(initial: initial),
+      child: _SkillsCreatorView(initial: initial),
     );
   }
 }
 
 class _SkillsCreatorView extends StatelessWidget {
-  const _SkillsCreatorView();
+  const _SkillsCreatorView({this.initial});
+
+  final Skill? initial;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +48,8 @@ class _SkillsCreatorView extends StatelessWidget {
                 return TextField(
                   key: const Key('skill_name'),
                   decoration: const InputDecoration(labelText: 'Name'),
+                  controller: TextEditingController.fromValue(
+                      TextEditingValue(text: state.name)),
                   onChanged: (String v) =>
                       context.read<SkillsCreatorCubit>().nameChanged(v),
                 );
@@ -55,6 +61,8 @@ class _SkillsCreatorView extends StatelessWidget {
                 return TextField(
                   key: const Key('skill_description'),
                   decoration: const InputDecoration(labelText: 'Description'),
+                  controller: TextEditingController.fromValue(
+                      TextEditingValue(text: state.description)),
                   onChanged: (String v) =>
                       context.read<SkillsCreatorCubit>().descriptionChanged(v),
                 );
@@ -83,7 +91,7 @@ class _SkillsCreatorView extends StatelessWidget {
                             : () async {
                                 final String id = await context
                                     .read<SkillsCreatorCubit>()
-                                    .save();
+                                    .save(existingId: initial?.id);
                                 final Skill skill = state.toSkill(id);
                                 Navigator.of(context).pop(skill);
                               },

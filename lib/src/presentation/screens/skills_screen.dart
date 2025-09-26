@@ -10,10 +10,17 @@ import 'package:roleplay_assistant/src/presentation/widgets/skills_creator.dart'
 
 @RoutePage()
 class SkillsScreen extends StatefulWidget {
-  const SkillsScreen({super.key, this.skills = const <Skill>[], this.onAdd});
+  const SkillsScreen(
+      {super.key,
+      this.skills = const <Skill>[],
+      this.onAdd,
+      this.onUpdate,
+      this.onDelete,});
 
   final List<Skill> skills;
   final void Function(Skill)? onAdd;
+  final void Function(Skill)? onUpdate;
+  final void Function(String /* id */)? onDelete;
 
   @override
   State<SkillsScreen> createState() => _SkillsScreenState();
@@ -40,9 +47,7 @@ class _SkillsScreenState extends State<SkillsScreen> {
       setState(() {
         _skills.add(result);
       });
-      if (widget.onAdd != null) {
-        widget.onAdd!(result);
-      }
+      widget.onAdd?.call(result);
     }
   }
 
@@ -67,7 +72,65 @@ class _SkillsScreenState extends State<SkillsScreen> {
                   subtitle: s.description != null && s.description!.isNotEmpty
                       ? Text(s.description!)
                       : null,
-                  trailing: s.cost != null ? Text('${s.cost}') : null,
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      if (s.cost != null)
+                        Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: Text('${s.cost}'),),
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        tooltip: 'Edit',
+                        onPressed: () async {
+                          final Object? res =
+                              await Navigator.of(context).push<Object>(
+                            MaterialPageRoute<Object>(
+                              builder: (BuildContext ctx) =>
+                                  SkillsCreatorScreen.fullscreen(initial: s),
+                              fullscreenDialog: true,
+                            ),
+                          );
+                          if (res is Skill) {
+                            setState(() {
+                              _skills[index] = res;
+                            });
+                            widget.onUpdate?.call(res);
+                          }
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        tooltip: 'Delete',
+                        onPressed: () async {
+                          final bool? confirmed = await showDialog<bool>(
+                            context: context,
+                            builder: (BuildContext dctx) => AlertDialog(
+                              title: const Text('Delete skill?'),
+                              content: Text(
+                                  'Delete "${s.name}"? This cannot be undone.',),
+                              actions: <Widget>[
+                                TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(dctx).pop(false),
+                                    child: const Text('Cancel'),),
+                                TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(dctx).pop(true),
+                                    child: const Text('Delete'),),
+                              ],
+                            ),
+                          );
+                          if (confirmed == true) {
+                            setState(() {
+                              _skills.removeAt(index);
+                            });
+                            widget.onDelete?.call(s.id);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                 );
               },
               separatorBuilder: (_, __) => const Divider(),

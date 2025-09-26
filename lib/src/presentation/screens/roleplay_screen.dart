@@ -13,6 +13,7 @@ import 'package:roleplay_assistant/src/shared/locator.dart';
 import 'package:roleplay_assistant/src/shared/models/character.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay_settings.dart';
+import 'package:roleplay_assistant/src/shared/models/skill.dart';
 import 'package:roleplay_assistant/src/shared/services/roleplay/roleplay_storage.dart';
 import 'package:roleplay_assistant/src/shared/widgets/buttons/button.dart';
 import 'package:roleplay_assistant/src/shared/widgets/buttons/square_button.dart';
@@ -175,10 +176,41 @@ class _RoleplayScreenState extends State<RoleplayScreen> {
                                 await storage.update(updated);
                               }
                             },
+                            onUpdate: (skill) async {
+                              final List<Skill> newSkills =
+                                  List<Skill>.from(_roleplay.skills);
+                              final int idx =
+                                  newSkills.indexWhere((s) => s.id == skill.id);
+                              if (idx >= 0) newSkills[idx] = skill;
+                              final Roleplay updated =
+                                  _roleplay.copyWith(skills: newSkills);
+                              setState(() {
+                                _roleplay = updated;
+                              });
+                              final RoleplayStorage storage =
+                                  locator<RoleplayStorage>();
+                              if (updated.id != null) {
+                                await storage.update(updated);
+                              }
+                            },
+                            onDelete: (String id) async {
+                              final List<Skill> newSkills =
+                                  List<Skill>.from(_roleplay.skills)
+                                    ..removeWhere((s) => s.id == id);
+                              final Roleplay updated =
+                                  _roleplay.copyWith(skills: newSkills);
+                              setState(() {
+                                _roleplay = updated;
+                              });
+                              final RoleplayStorage storage =
+                                  locator<RoleplayStorage>();
+                              if (updated.id != null) {
+                                await storage.update(updated);
+                              }
+                            },
                           ),
                         ),
                       );
-                      // result handled via onAdd callback; nothing else to do here.
                     },
                     icon: const Icon(Icons.auto_fix_high),
                     size: itemSize,
