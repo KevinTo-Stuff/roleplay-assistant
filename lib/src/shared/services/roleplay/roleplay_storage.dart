@@ -1,4 +1,6 @@
 // Dart imports:
+// ignore_for_file: require_trailing_commas
+
 import 'dart:convert';
 import 'dart:math';
 

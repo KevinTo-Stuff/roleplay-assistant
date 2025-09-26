@@ -45,3 +45,5 @@ app.*.map.json
 
 # Helper .bats
 run_buildrunner.bat
+
+.instructions.md
