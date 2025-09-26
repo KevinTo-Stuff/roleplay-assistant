@@ -7,7 +7,6 @@ import 'package:auto_route/auto_route.dart';
 // Project imports:
 import 'package:roleplay_assistant/src/core/routing/app_router.dart';
 import 'package:roleplay_assistant/src/core/theme/dimens.dart';
-import 'package:roleplay_assistant/src/presentation/screens/character_screen.dart';
 import 'package:roleplay_assistant/src/shared/locator.dart';
 import 'package:roleplay_assistant/src/shared/models/character.dart';
 import 'package:roleplay_assistant/src/shared/models/roleplay.dart';
@@ -129,29 +128,26 @@ class _RoleplayScreenState extends State<RoleplayScreen> {
                 final List<Widget> items = <Widget>[
                   SquareButton.primary(
                     onPressed: () async {
-                      // Navigate to the Characters screen and provide an
-                      // onChanged callback so edits/deletes persist to storage.
+                      // Navigate to the Characters screen using auto_route and provide onChanged callback.
                       final RoleplayStorage storage =
                           locator<RoleplayStorage>();
-                      await Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (BuildContext ctx) => CharacterScreen(
-                            characters: _roleplay.characters,
-                            settings: _roleplay.settings,
-                            onChanged: (List<Character> updated) async {
-                              final Roleplay updatedRp = _roleplay.copyWith(
-                                characters: updated,
-                              );
-                              if (updatedRp.id != null) {
-                                await storage.update(updatedRp);
-                              }
-                              setState(() {
-                                _roleplay = updatedRp;
-                              });
-                            },
-                          ),
+                      final Object? result = await context.router.push(
+                        CharacterRoute(
+                          characters: _roleplay.characters,
+                          settings: _roleplay.settings,
                         ),
                       );
+                      if (result is List<Character>) {
+                        final Roleplay updatedRp = _roleplay.copyWith(
+                          characters: result,
+                        );
+                        if (updatedRp.id != null) {
+                          await storage.update(updatedRp);
+                        }
+                        setState(() {
+                          _roleplay = updatedRp;
+                        });
+                      }
                     },
                     icon: const Icon(Icons.person),
                     size: itemSize,
