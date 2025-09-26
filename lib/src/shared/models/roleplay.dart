@@ -85,7 +85,143 @@ class Roleplay {
       name: '',
       active: false,
       description: '',
-      settings: RoleplaySettings.empty(),
+      settings: RoleplaySettings(
+        resistences: <String>['fire', 'ice'],
+        resistanceLevels: <String>['weak', 'normal', 'resistant'],
+        stats: <String>['strength', 'intelligence'],
+      ),
+    );
+  }
+
+  /// Convenience factory that returns a small example Roleplay used when the
+  /// user has not created any roleplays yet. This contains one example
+  /// character and a couple of simple skills so the UI has data to display.
+  static Roleplay example() {
+    return Roleplay(
+      id: null,
+      name: 'Example Roleplay',
+      active: true,
+      description:
+          'A short example roleplay to demonstrate the app. Create your own to replace it.',
+      settings: RoleplaySettings(
+        resistences: <String>['fire', 'ice', 'poison', 'lightning'],
+        resistanceLevels: <String>[
+          'vulnerable',
+          'weak',
+          'normal',
+          'resistant',
+          'immune'
+        ],
+        stats: <String>['strength', 'intelligence', 'agility', 'charisma'],
+      ),
+      characters: <Character>[
+        const Character(
+          id: 'example_char_1',
+          firstName: 'Ari',
+          lastName: 'Stone',
+          gender: Gender.other,
+          age: 28,
+          description: 'An adventurous scout and the party face.',
+          resistances: <String, String>{
+            'fire': 'normal',
+            'ice': 'weak',
+            'poison': 'resistant'
+          },
+          stats: <String, int>{
+            'strength': 6,
+            'intelligence': 7,
+            'agility': 8,
+            'charisma': 5
+          },
+          positiveTraits: <String>['brave', 'curious'],
+          negativeTraits: <String>['reckless'],
+        ),
+        const Character(
+          id: 'example_char_2',
+          firstName: 'Bram',
+          lastName: 'Hollow',
+          gender: Gender.male,
+          age: 35,
+          description: 'A grizzled veteran with tactical sense.',
+          resistances: <String, String>{
+            'fire': 'resistant',
+            'ice': 'normal',
+            'lightning': 'weak'
+          },
+          stats: <String, int>{
+            'strength': 8,
+            'intelligence': 6,
+            'agility': 4,
+            'charisma': 4
+          },
+          positiveTraits: <String>['steady', 'tactical'],
+          negativeTraits: <String>['gruff'],
+        ),
+        const Character(
+          id: 'example_char_3',
+          firstName: 'Lyra',
+          lastName: 'Vale',
+          gender: Gender.female,
+          age: 22,
+          description: 'A young spellcaster learning her craft.',
+          resistances: <String, String>{
+            'fire': 'vulnerable',
+            'ice': 'normal',
+            'poison': 'weak',
+            'lightning': 'normal'
+          },
+          stats: <String, int>{
+            'strength': 3,
+            'intelligence': 9,
+            'agility': 6,
+            'charisma': 7
+          },
+          positiveTraits: <String>['studious', 'clever'],
+          negativeTraits: <String>['timid'],
+        ),
+      ],
+      skills: <Skill>[
+        const Skill(
+          id: 'example_skill_1',
+          name: 'Quick Shot',
+          costType: 'stamina',
+          cost: 2,
+          type: 'attack',
+          damageType: 'piercing',
+          description: 'A fast ranged attack that deals light damage.',
+          flavor: 'A precise, rapid shot.',
+        ),
+        const Skill(
+          id: 'example_skill_2',
+          name: 'Inspire',
+          costType: 'will',
+          cost: 1,
+          type: 'support',
+          damageType: '',
+          description: 'Boosts an ally\'s next roll by a small amount.',
+          flavor: 'A rousing word or gesture.',
+        ),
+        const Skill(
+          id: 'example_skill_3',
+          name: 'Firebolt',
+          costType: 'mana',
+          cost: 3,
+          type: 'attack',
+          damageType: 'fire',
+          description: 'A small bolt of fire that scorches a single target.',
+          flavor: 'A bright flare of orange flame.',
+        ),
+        const Skill(
+          id: 'example_skill_4',
+          name: 'Heal',
+          costType: 'mana',
+          cost: 2,
+          type: 'support',
+          damageType: '',
+          description: 'Restores a small amount of health to an ally.',
+          flavor: 'A warm, mending light.',
+        ),
+      ],
     );
   }
 

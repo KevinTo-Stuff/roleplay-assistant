@@ -29,14 +29,17 @@ class RoleplayStorage {
 
   Future<List<Roleplay>> _readAll() async {
     final List<String>? list = await storage.read<List<String>>(key: _kKey);
-    if (list == null) return <Roleplay>[];
+    // If nothing is stored yet, return a single example roleplay so the
+    // app can show a helpful demo when first opened. Actual user-created
+    // roleplays are persisted once created and will replace this example.
+    if (list == null || list.isEmpty) return <Roleplay>[Roleplay.example()];
     try {
       return list
           .map((String e) =>
               Roleplay.fromJson(jsonDecode(e) as Map<String, dynamic>))
           .toList();
     } catch (_) {
-      return <Roleplay>[];
+      return <Roleplay>[Roleplay.example()];
     }
   }
 

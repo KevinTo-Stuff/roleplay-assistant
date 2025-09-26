@@ -89,6 +89,14 @@ and platform folders for Android, Windows and web builds.
 - Send pull requests against the `main` branch (or target branch used by the
  project). Include tests and a brief description of the change.
 
+## Behavior note
+
+When the app is launched and no roleplays have been created by the user, the
+app provides a single "Example Campaign" roleplay to demonstrate the UI and
+features. This example is not persisted to the user's storage until they
+create or edit a roleplay; once the user creates their own roleplay it will
+appear in the list as normal.
+
 ## License
 
 - See the `LICENSE` file at the repository root for license terms.
