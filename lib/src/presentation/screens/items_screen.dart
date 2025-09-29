@@ -45,10 +45,11 @@ class _ItemsScreenState extends State<ItemsScreen> {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      builder: (_) => Padding(
+      builder: (BuildContext _) => Padding(
         padding: EdgeInsets.only(
-            // ignore: require_trailing_commas
-            bottom: MediaQuery.of(context).viewInsets.bottom),
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        // ignore: always_specify_types
         child: BlocProvider.value(
           value: _cubit,
           child: const ItemCreator(),
@@ -63,10 +64,12 @@ class _ItemsScreenState extends State<ItemsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.of(context).pop(_roleplay);
-        return true;
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (bool didPop, bool? result) {
+        if (!didPop) {
+          Navigator.of(context).pop(_roleplay);
+        }
       },
       child: Scaffold(
         appBar: AppBar(title: const Text('Items')),

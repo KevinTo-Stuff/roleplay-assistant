@@ -12,4 +12,5 @@ final GetIt locator = GetIt.instance
   ..registerLazySingleton<Storage>(() => LocalStorage())
   // Register RoleplayStorage after Storage so it can be resolved with the concrete Storage implementation
   ..registerLazySingleton<RoleplayStorage>(
-      () => RoleplayStorage(storage: GetIt.instance<Storage>()),);
+    () => RoleplayStorage(storage: GetIt.instance<Storage>()),
+  );

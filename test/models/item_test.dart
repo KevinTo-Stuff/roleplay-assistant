@@ -17,7 +17,7 @@ void main() {
       'rarity': 'common',
       'soulbound': false,
       'sold_at': <String>['village_shop']
-    // ignore: require_trailing_commas
+      // ignore: require_trailing_commas
     };
 
     final Item item = Item.fromJson(json);

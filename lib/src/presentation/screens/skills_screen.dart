@@ -10,12 +10,13 @@ import 'package:roleplay_assistant/src/shared/models/skill.dart';
 
 @RoutePage()
 class SkillsScreen extends StatefulWidget {
-  const SkillsScreen(
-      {super.key,
-      this.skills = const <Skill>[],
-      this.onAdd,
-      this.onUpdate,
-      this.onDelete,});
+  const SkillsScreen({
+    super.key,
+    this.skills = const <Skill>[],
+    this.onAdd,
+    this.onUpdate,
+    this.onDelete,
+  });
 
   final List<Skill> skills;
   final void Function(Skill)? onAdd;
@@ -77,8 +78,9 @@ class _SkillsScreenState extends State<SkillsScreen> {
                     children: <Widget>[
                       if (s.cost != null)
                         Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: Text('${s.cost}'),),
+                          padding: const EdgeInsets.only(right: 8),
+                          child: Text('${s.cost}'),
+                        ),
                       IconButton(
                         icon: const Icon(Icons.edit),
                         tooltip: 'Edit',
@@ -108,16 +110,18 @@ class _SkillsScreenState extends State<SkillsScreen> {
                             builder: (BuildContext dctx) => AlertDialog(
                               title: const Text('Delete skill?'),
                               content: Text(
-                                  'Delete "${s.name}"? This cannot be undone.',),
+                                'Delete "${s.name}"? This cannot be undone.',
+                              ),
                               actions: <Widget>[
                                 TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(dctx).pop(false),
-                                    child: const Text('Cancel'),),
+                                  onPressed: () =>
+                                      Navigator.of(dctx).pop(false),
+                                  child: const Text('Cancel'),
+                                ),
                                 TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(dctx).pop(true),
-                                    child: const Text('Delete'),),
+                                  onPressed: () => Navigator.of(dctx).pop(true),
+                                  child: const Text('Delete'),
+                                ),
                               ],
                             ),
                           );

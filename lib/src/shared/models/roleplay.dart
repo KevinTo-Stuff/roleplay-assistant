@@ -5,7 +5,6 @@
 import 'package:flutter/foundation.dart';
 
 // Dart imports:
-import 'dart:math';
 
 // Project imports:
 import 'character.dart';
@@ -107,6 +106,7 @@ class Roleplay {
         resistences: <String>['fire', 'ice'],
         resistanceLevels: <String>['weak', 'normal', 'resistant'],
         stats: <String>['strength', 'intelligence'],
+        socialStats: <String>['reputation'],
       ),
     );
   }
@@ -131,6 +131,7 @@ class Roleplay {
           'immune'
         ],
         stats: <String>['strength', 'intelligence', 'agility', 'charisma'],
+        socialStats: <String>['reputation', 'influence'],
       ),
       characters: <Character>[
         const Character(
@@ -151,6 +152,7 @@ class Roleplay {
             'agility': 8,
             'charisma': 5
           },
+          socialStats: <String, int>{'reputation': 3, 'influence': 2},
           positiveTraits: <String>['brave', 'curious'],
           negativeTraits: <String>['reckless'],
         ),
@@ -172,6 +174,7 @@ class Roleplay {
             'agility': 4,
             'charisma': 4
           },
+          socialStats: <String, int>{'reputation': 4, 'influence': 1},
           positiveTraits: <String>['steady', 'tactical'],
           negativeTraits: <String>['gruff'],
         ),
@@ -194,6 +197,7 @@ class Roleplay {
             'agility': 6,
             'charisma': 7
           },
+          socialStats: <String, int>{'reputation': 1, 'influence': 5},
           positiveTraits: <String>['studious', 'clever'],
           negativeTraits: <String>['timid'],
         ),
@@ -241,18 +245,69 @@ class Roleplay {
         ),
       ],
       items: <Item>[
-        // generate a small random selection of example items
-        for (final int i in List<int>.generate(Random().nextInt(5) + 2, (int idx) => idx))
-          Item(
-            id: 'example_item_$i',
-            name: 'Item ${i + 1}',
-            type: ItemType.values[i % ItemType.values.length],
-            description: 'An example item for demo purposes.',
-            cost: 10 + i * 5,
-            sell: 5 + i * 2,
-            rarity: Rarity.values[i % Rarity.values.length],
-            soulbound: i % 4 == 0 ? true : false,
-          ),
+        const Item(
+          id: 'example_item_1',
+          name: 'Traveler\'s Rations',
+          type: ItemType.consumable,
+          description:
+              'Simple preserved food to stave off hunger on long journeys.',
+          flavorText: 'Hard tack and dried fruit in a leather wrap.',
+          cost: 5,
+          sell: 2,
+          rarity: Rarity.common,
+        ),
+        const Item(
+          id: 'example_item_2',
+          name: 'Scout\'s Compass',
+          type: ItemType.accessory,
+          description: 'A compact compass used by scouts to navigate wilds.',
+          flavorText: 'Its needle seems to point toward adventure.',
+          cost: 25,
+          sell: 10,
+          rarity: Rarity.uncommon,
+        ),
+        const Item(
+          id: 'example_item_3',
+          name: 'Emberblade',
+          type: ItemType.weapon,
+          description: 'A short sword warmed with a faint, persistent heat.',
+          flavorText: 'Once wielded by a soldier of the ashlands.',
+          cost: 150,
+          sell: 75,
+          rarity: Rarity.rare,
+        ),
+        const Item(
+          id: 'example_item_4',
+          name: 'Sage\'s Grimoire',
+          type: ItemType.keyItem,
+          description: 'A worn book of beginner fire spells and notes.',
+          flavorText: 'Pages stained with soot and careful annotations.',
+          cost: 0,
+          sell: 0,
+          rarity: Rarity.uncommon,
+          soulbound: true,
+        ),
+        const Item(
+          id: 'example_item_5',
+          name: 'Veteran\'s Band',
+          type: ItemType.accessory,
+          description: 'A battered iron band worn by veterans as a token.',
+          flavorText: 'Keeps steady hands and steadier hearts.',
+          cost: 45,
+          sell: 20,
+          rarity: Rarity.uncommon,
+        ),
+        const Item(
+          id: 'example_item_6',
+          name: 'Flame-Touched Vial',
+          type: ItemType.consumable,
+          description:
+              'A vial containing a single volatile ember for casting small firebolts.',
+          flavorText: 'Warms the palm with a tiny, controllable spark.',
+          cost: 60,
+          sell: 30,
+          rarity: Rarity.rare,
+        ),
       ],
     );
   }

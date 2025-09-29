@@ -69,10 +69,11 @@ class _ItemCreatorState extends State<ItemCreator> {
                     initialValue: _type,
                     items: ItemType.values
                         .map<DropdownMenuItem<ItemType>>(
-                            (ItemType e) => DropdownMenuItem<ItemType>(
-                                  value: e,
-                                  child: Text(e.toShortString()),
-                                ),)
+                          (ItemType e) => DropdownMenuItem<ItemType>(
+                            value: e,
+                            child: Text(e.toShortString()),
+                          ),
+                        )
                         .toList(),
                     onChanged: (ItemType? v) {
                       if (v != null) setState(() => _type = v);

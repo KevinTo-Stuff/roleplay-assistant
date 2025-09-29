@@ -86,6 +86,13 @@ class CharacterView extends StatelessWidget {
           _buildStats(),
           const SizedBox(height: 16.0),
           Text(
+            'Social Stats',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 8.0),
+          _buildSocialStats(),
+          const SizedBox(height: 16.0),
+          Text(
             'Resistances',
             style: Theme.of(context).textTheme.titleMedium,
           ),
@@ -107,6 +114,21 @@ class CharacterView extends StatelessWidget {
           _buildTraitList(character.negativeTraits),
         ],
       ),
+    );
+  }
+
+  Widget _buildSocialStats() {
+    if (character.socialStats.isEmpty) return const Text('No social stats');
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: character.socialStats.entries
+          .map(
+            (MapEntry<String, int> e) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2.0),
+              child: Text('${e.key}: ${e.value}'),
+            ),
+          )
+          .toList(),
     );
   }
 

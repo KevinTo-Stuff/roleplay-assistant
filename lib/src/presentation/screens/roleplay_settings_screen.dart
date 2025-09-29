@@ -60,12 +60,14 @@ class _RoleplaySettingsBodyState extends State<_RoleplaySettingsBody> {
   final TextEditingController _resController = TextEditingController();
   final TextEditingController _levelController = TextEditingController();
   final TextEditingController _statController = TextEditingController();
+  final TextEditingController _socialStatController = TextEditingController();
 
   @override
   void dispose() {
     _resController.dispose();
     _levelController.dispose();
     _statController.dispose();
+    _socialStatController.dispose();
     super.dispose();
   }
 
@@ -168,6 +170,47 @@ class _RoleplaySettingsBodyState extends State<_RoleplaySettingsBody> {
                     if (val.isNotEmpty) {
                       context.read<RoleplaySettingsCubit>().addStat(val);
                       _statController.clear();
+                    }
+                  },
+                )
+              ]),
+              const SizedBox(height: 16),
+              const Text('Social Stats',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              for (var i = 0; i < state.settings.socialStats.length; i++)
+                ListTile(
+                  title: Text(state.settings.socialStats[i]),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () => context
+                        .read<RoleplaySettingsCubit>()
+                        .removeSocialStatAt(i),
+                  ),
+                ),
+              Row(children: [
+                Expanded(
+                  child: TextField(
+                      controller: _socialStatController,
+                      decoration:
+                          const InputDecoration(hintText: 'New social stat')),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: () {
+                    final val = _socialStatController.text.trim();
+                    // UX: only allow a single word (no whitespace)
+                    if (val.isNotEmpty && !val.contains(RegExp(r"\s"))) {
+                      context.read<RoleplaySettingsCubit>().addSocialStat(val);
+                      _socialStatController.clear();
+                    } else if (val.isNotEmpty) {
+                      // show a brief message explaining the restriction
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Social stats must be a single word.'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
                     }
                   },
                 )

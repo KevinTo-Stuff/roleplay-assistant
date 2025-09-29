@@ -48,7 +48,8 @@ class _TraitsCreatorState extends State<TraitsCreator> {
     if (raw.contains(RegExp(r"\s"))) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('Traits must be a single word (no spaces)'),),
+          content: Text('Traits must be a single word (no spaces)'),
+        ),
       );
       return;
     }
@@ -97,10 +98,12 @@ class _TraitsCreatorState extends State<TraitsCreator> {
           spacing: 8,
           runSpacing: 8,
           children: widget.traits
-              .map((String t) => InputChip(
-                    label: Text(t),
-                    onDeleted: () => widget.onRemove(t),
-                  ),)
+              .map(
+                (String t) => InputChip(
+                  label: Text(t),
+                  onDeleted: () => widget.onRemove(t),
+                ),
+              )
               .toList(),
         ),
       ],

@@ -7,7 +7,6 @@ import 'skills_creator_state.dart';
 
 // avoid adding new dependency for uuid; use timestamp-based id
 
-
 class SkillsCreatorCubit extends Cubit<SkillsCreatorState> {
   /// Provide an optional [initial] Skill to prefill the creator for editing.
   SkillsCreatorCubit({Skill? initial})

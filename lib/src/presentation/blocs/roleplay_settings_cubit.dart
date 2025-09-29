@@ -70,6 +70,24 @@ class RoleplaySettingsCubit extends Cubit<RoleplaySettingsState> {
     );
   }
 
+  void addSocialStat(String value) {
+    final RoleplaySettings next = state.settings.copyWith(
+      socialStats: List<String>.from(state.settings.socialStats)..add(value),
+    );
+    emit(state.copyWith(settings: next, isDirty: true));
+  }
+
+  void removeSocialStatAt(int index) {
+    final List<String> list = List<String>.from(state.settings.socialStats)
+      ..removeAt(index);
+    emit(
+      state.copyWith(
+        settings: state.settings.copyWith(socialStats: list),
+        isDirty: true,
+      ),
+    );
+  }
+
   void reset(RoleplaySettings to) {
     emit(RoleplaySettingsState(settings: to));
   }

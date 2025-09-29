@@ -61,11 +61,13 @@ class Character extends Equatable {
     this.description,
     Map<String, String>? resistances,
     Map<String, int>? stats,
-    List<String>? positiveTraits,
+  Map<String, int>? socialStats,
+  List<String>? positiveTraits,
     List<String>? negativeTraits,
   })  : resistances = resistances ?? const <String, String>{},
-        stats = stats ?? const <String, int>{},
-        positiveTraits = positiveTraits ?? const <String>[],
+    stats = stats ?? const <String, int>{},
+    socialStats = socialStats ?? const <String, int>{},
+    positiveTraits = positiveTraits ?? const <String>[],
         negativeTraits = negativeTraits ?? const <String>[];
 
   /// Create a Character from JSON map.
@@ -86,6 +88,17 @@ class Character extends Equatable {
           final int intVal =
               v is int ? v : int.tryParse(v?.toString() ?? '0') ?? 0;
           rawStats[k] = intVal;
+        }
+      });
+    }
+
+    final Map<String, int> rawSocial = <String, int>{};
+    if (json['social_stats'] is Map) {
+      // ignore: always_specify_types
+      (json['social_stats'] as Map).forEach((k, v) {
+        if (k is String) {
+          final int intVal = v is int ? v : int.tryParse(v?.toString() ?? '0') ?? 0;
+          rawSocial[k] = intVal;
         }
       });
     }
@@ -118,6 +131,7 @@ class Character extends Equatable {
       description: json['description']?.toString(),
       resistances: rawRes,
       stats: rawStats,
+      socialStats: rawSocial,
       positiveTraits: posTraits,
       negativeTraits: negTraits,
     );
@@ -133,6 +147,7 @@ class Character extends Equatable {
   final String? description;
   final Map<String, String> resistances;
   final Map<String, int> stats;
+  final Map<String, int> socialStats;
   final List<String> positiveTraits;
   final List<String> negativeTraits;
 
@@ -146,6 +161,7 @@ class Character extends Equatable {
     String? description,
     Map<String, String>? resistances,
     Map<String, int>? stats,
+    Map<String, int>? socialStats,
     List<String>? positiveTraits,
     List<String>? negativeTraits,
   }) {
@@ -159,6 +175,7 @@ class Character extends Equatable {
       description: description ?? this.description,
       resistances: resistances ?? Map<String, String>.from(this.resistances),
       stats: stats ?? Map<String, int>.from(this.stats),
+      socialStats: socialStats ?? Map<String, int>.from(this.socialStats),
       positiveTraits: positiveTraits ?? List<String>.from(this.positiveTraits),
       negativeTraits: negativeTraits ?? List<String>.from(this.negativeTraits),
     );
@@ -175,6 +192,7 @@ class Character extends Equatable {
         'description': description,
         'resistances': resistances,
         'stats': stats,
+    'social_stats': socialStats,
         'positive_traits': positiveTraits,
         'negative_traits': negativeTraits,
       };
@@ -190,6 +208,7 @@ class Character extends Equatable {
         description,
         resistances,
         stats,
+        socialStats,
         positiveTraits,
         negativeTraits,
       ];

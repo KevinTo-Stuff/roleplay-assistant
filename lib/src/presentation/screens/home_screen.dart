@@ -195,6 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
       resistences: List<String>.from(settings.resistences),
       resistanceLevels: List<String>.from(settings.resistanceLevels),
       stats: List<String>.from(settings.stats),
+      socialStats: List<String>.from(settings.socialStats),
     );
     if (fixedSettings != r.settings) changed = true;
 
